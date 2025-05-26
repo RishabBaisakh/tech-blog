@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const blogRoutes = require("./routes/blogRoutes");
 const authRoutes = require("./routes/authRoutes");
+const cookieParser = require("cookie-parser");
 
 // express app
 const app = express();
@@ -28,23 +29,32 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("tiny"));
+app.use(express.json());
+app.use(cookieParser);
 
 // routes
 app.get("/", (req, res) => {
+  console.log("This should be here!");
   res.render("home", { title: "Home" });
 });
+app.use("/", authRoutes);
 app.use("/blogs", blogRoutes);
-app.use("/auth", authRoutes);
 
-// app.get("/about", (req, res) => {
-//   res.render("about", { title: "About" });
-// });
+// cookies
+app.get("/set-cookies", (req, res) => {
+  // res.setHeader("Set-Cookie", "newUser=true");
 
-// app.get("/about-us", (req, res) => {
-//   res.redirect("/about");
-// });
+  // res.cookie("newUser", false);
+  res.send("You got the cookies!");
+});
 
-// // 404 page
-// app.use((req, res) => {
-//   res.status(404).render("404", { title: "Oops!" });
-// });
+app.get("/read-cookies", (req, res) => {});
+
+app.get("/about", (req, res) => {
+  res.render("about", { title: "About" });
+});
+
+// 404 page
+app.use((req, res) => {
+  res.status(404).render("404", { title: "Oops!" });
+});

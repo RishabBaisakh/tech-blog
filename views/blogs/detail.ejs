@@ -1,36 +1,34 @@
-<html lang="en">
-  <%- include("../partials/head.ejs") %>
-  <body>
-    <%- include('../partials/nav.ejs') %>
+<%- include("../partials/head.ejs") %>
+<body>
+  <%- include('../partials/nav.ejs') %>
 
-    <div class="details content">
-      <h2><%= blog.title %></h2>
-      <div class="content">
-        <p><%= blog.body %></p>
-      </div>
-
-      <a class="delete" data-doc="<%= blog._id %>">Delete</a>
+  <div class="details content">
+    <h2><%= blog.title %></h2>
+    <div class="content">
+      <p><%= blog.body %></p>
     </div>
-    <%- include('../partials/footer.ejs') %>
 
-    <script>
-      const trashCan = document.querySelector("a.delete");
+    <a class="delete" data-doc="<%= blog._id %>">Delete</a>
+  </div>
+  <%- include('../partials/footer.ejs') %>
 
-      trashCan.addEventListener("click", (event) => {
-        const endpoint = `/blogs/${trashCan.dataset.doc}`;
+  <script>
+    const trashCan = document.querySelector("a.delete");
 
-        // AJAX request
-        fetch(endpoint, {
-          method: "DELETE",
-        })
-          .then((response) => response.json())
-          .then((data) => (window.location.href = data.redirect))
-          .catch((err) =>
-            console.log(
-              `Error occurred while deleting the blog, ${trashCan.dataset.doc}: ${err}`
-            )
-          );
-      });
-    </script>
-  </body>
-</html>
+    trashCan.addEventListener("click", (event) => {
+      const endpoint = `/blogs/${trashCan.dataset.doc}`;
+
+      // AJAX request
+      fetch(endpoint, {
+        method: "DELETE",
+      })
+        .then((response) => response.json())
+        .then((data) => (window.location.href = data.redirect))
+        .catch((err) =>
+          console.log(
+            `Error occurred while deleting the blog, ${trashCan.dataset.doc}: ${err}`
+          )
+        );
+    });
+  </script>
+</body>
