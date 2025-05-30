@@ -166,7 +166,8 @@ textarea {
   margin: 20px 0 10px;
 }
 
-.auth form button {
+.auth form button,
+nav .signup {
   margin-top: 30px;
   border-radius: 36px;
   background: #fee996;
@@ -177,4 +178,20 @@ textarea {
   display: block;
   padding: 10px 16px;
   letter-spacing: 2px;
+}
+
+nav .signup {
+  margin: 0 !important;
+}
+
+.auth form .error {
+  color: #ff0099;
+  margin: 10px 2px;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+nav .auth-links {
+  display: flex;
+  align-items: center;
 }

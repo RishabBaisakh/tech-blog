@@ -6,8 +6,17 @@
     <p>A tech knowledge hub for everybody to share</p>
   </div>
   <ul>
-    <li><a href="/">Blogs</a></li>
+    <li><a href="/blogs">Blogs</a></li>
     <li><a href="/about">About</a></li>
     <li><a href="/blogs/create">New Blog</a></li>
+  </ul>
+  <ul class="auth-links">
+    <% if (user) { %>
+    <li>Welcome, <%= user.email %></li>
+    <li><a href="/logout">Logout</a></li>
+    <% } else { %>
+    <li><a href="/login">Login</a></li>
+    <li><a class="signup" href="/signup">Sign Up</a></li>
+    <% } %>
   </ul>
 </nav>

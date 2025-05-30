@@ -1,5 +1,4 @@
-<%- include("../partials/head.ejs") %>
-
+<%- include("../partials/head.ejs") %> <%- include("../partials/nav.ejs") %>
 <div class="auth">
   <form>
     <h2>Login</h2>
@@ -15,13 +14,41 @@
 
 <script>
   const form = document.querySelector("form");
+  const emailErrors = document.querySelector(".email.error");
+  const passwordErrors = document.querySelector(".password.error");
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     // get the values!
-    const email = form.email;
-    const password = form.password;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    // reset errors
+    emailErrors.textContent = "";
+    passwordErrors.textContent = "";
+
+    try {
+      const result = await fetch("/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await result.json();
+      if (data.errors) {
+        emailErrors.textContent = data.errors.email;
+        passwordErrors.textContent = data.errors.password;
+      }
+
+      if (data.user) {
+        location.assign("/");
+      }
+    } catch (error) {
+      console.log("🚀 ~ LOGIN | form.addEventListener ~ error:", error);
+    }
   });
 </script>
 

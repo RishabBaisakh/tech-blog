@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const blogRoutes = require("./routes/blogRoutes");
 const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
+const { requireAuth, checkUser } = require("./middlewares/authMiddleware");
 
 // express app
 const app = express();
@@ -30,25 +31,16 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("tiny"));
 app.use(express.json());
-app.use(cookieParser);
+app.use(cookieParser());
+app.use(checkUser);
 
 // routes
+// app.get("/*name", checkUser);
 app.get("/", (req, res) => {
-  console.log("This should be here!");
   res.render("home", { title: "Home" });
 });
+app.use("/blogs", requireAuth, blogRoutes);
 app.use("/", authRoutes);
-app.use("/blogs", blogRoutes);
-
-// cookies
-app.get("/set-cookies", (req, res) => {
-  // res.setHeader("Set-Cookie", "newUser=true");
-
-  // res.cookie("newUser", false);
-  res.send("You got the cookies!");
-});
-
-app.get("/read-cookies", (req, res) => {});
 
 app.get("/about", (req, res) => {
   res.render("about", { title: "About" });
