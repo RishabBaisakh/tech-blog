@@ -1,8 +1,9 @@
 const Profile = require("../models/profile");
+const { findProfileByUser } = require("../utils/profileUtils");
 
 module.exports.profile_get = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ user: req.user });
+    const profile = await findProfileByUser(req.user);
 
     if (profile) {
       return res.render("profile", { title: "Profile", profile });
@@ -16,9 +17,9 @@ module.exports.profile_get = async (req, res) => {
 
 module.exports.profile_create_get = async (req, res) => {
   try {
-    const existingProfile = await Profile.findOne({ user: req.user });
+    const profile = await findProfileByUser(req.user);
 
-    if (existingProfile) {
+    if (profile) {
       return res.redirect("/profile");
     } else {
       return res.render("profile/create", { title: "Create Profile" });
@@ -29,9 +30,8 @@ module.exports.profile_create_get = async (req, res) => {
 };
 
 module.exports.profile_create_post = async (req, res) => {
-  const user = req.user;
   try {
-    const existingProfile = await Profile.findOne({ user: req.user });
+    const existingProfile = await findProfileByUser(req.user);
 
     if (existingProfile) {
       return res.redirect("/profile");
@@ -56,7 +56,7 @@ module.exports.profile_create_post = async (req, res) => {
 
 module.exports.profile_edit_get = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ user: req.user });
+    const profile = await findProfileByUser(req.user);
 
     if (profile) {
       return res.render("profile/edit", {
@@ -73,7 +73,7 @@ module.exports.profile_edit_get = async (req, res) => {
 
 module.exports.profile_update_post = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ user: req.user });
+    const profile = await findProfileByUser(req.user);
 
     if (!profile) {
       return res.redirect("/profile/create");
