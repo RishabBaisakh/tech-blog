@@ -1,0 +1,16 @@
+<html lang="en">
+  <%- include("../partials/head.ejs") %>
+  <body>
+    <%- include('../partials/nav.ejs') %>
+
+    <!-- TODO: fix styles -->
+    <div class="content profile">
+      <a href="/profile/edit">Edit Profile</a>
+      <h1>Profile Page</h1>
+      <p><%= profile.firstName %></p>
+      <p><%= profile.lastName %></p>
+      <img src="uploads/<%= profile.image.filename %>" alt="ProfileImage" />
+    </div>
+    <%- include('../partials/footer.ejs') %>
+  </body>
+</html>

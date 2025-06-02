@@ -1,10 +1,13 @@
 const express = require("express");
 const morgan = require("morgan");
+const upload = require("./middlewares/uploadImageMiddleware");
 const mongoose = require("mongoose");
 const blogRoutes = require("./routes/blogRoutes");
 const authRoutes = require("./routes/authRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 const cookieParser = require("cookie-parser");
 const { requireAuth, checkUser } = require("./middlewares/authMiddleware");
+const { checkProfile } = require("./middlewares/profileMiddleware");
 
 // express app
 const app = express();
@@ -33,6 +36,7 @@ app.use(morgan("tiny"));
 app.use(express.json());
 app.use(cookieParser());
 app.use(checkUser);
+app.use(checkProfile);
 
 // routes
 // app.get("/*name", checkUser);
@@ -40,6 +44,7 @@ app.get("/", (req, res) => {
   res.render("home", { title: "Home" });
 });
 app.use("/blogs", requireAuth, blogRoutes);
+app.use("/profile", requireAuth, upload.single("image"), profileRoutes);
 app.use("/", authRoutes);
 
 app.get("/about", (req, res) => {

@@ -3,8 +3,6 @@ const jwt = require("jsonwebtoken");
 
 // handle errors
 const handleErrors = (err) => {
-  console.log("🚀 ~ handleErrors ~ err:", err.message);
-
   let errors = {
     email: "",
     password: "",
@@ -63,7 +61,7 @@ module.exports.signup_post = async (req, res) => {
   }
 };
 
-module.exports.login_get = (req, res) => {
+module.exports.login_get = async (req, res) => {
   res.render("auth/login", { title: "Login" });
 };
 

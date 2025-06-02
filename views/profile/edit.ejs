@@ -1,0 +1,38 @@
+<html lang="en">
+  <%- include("../partials/head.ejs") %>
+  <body>
+    <%- include('../partials/nav.ejs') %>
+
+    <div class="content profile edit-profile">
+      <form
+        action="/profile/create"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <label for="firstName">First Name:</label>
+        <input
+          type="text"
+          id="firstName"
+          name="firstName"
+          value="<%= profile.firstName %>"
+          required
+        />
+
+        <label for="lastName">Last Name:</label>
+        <input
+          type="text"
+          id="lastName"
+          name="lastName"
+          value="<%= profile.firstName %>"
+          required
+        />
+
+        <label for="image">Image:</label>
+        <input type="file" id="image" name="image" />
+        <img src="/uploads/<%= profile.image.filename %>" alt="ProfileImage" />
+        <button>Submit</button>
+      </form>
+    </div>
+    <%- include('../partials/footer.ejs') %>
+  </body>
+</html>

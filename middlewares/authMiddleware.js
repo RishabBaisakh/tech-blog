@@ -7,10 +7,9 @@ const requireAuth = (req, res, next) => {
   // check if the token exits
   if (token) {
     // verify the token
-    jwt.verify(token, "tech blog secret", (err, decodedToken) => {
+    jwt.verify(token, "tech blog secret", async (err, decodedToken) => {
       if (err) {
-        console.log("🚀 ~ jwt.verify ~ err:", err.message);
-        redirect("/login");
+        res.redirect("/login");
       } else {
         next();
       }
@@ -33,6 +32,7 @@ const checkUser = (req, res, next) => {
       } else {
         let user = await User.findById(decodedToken.id);
         res.locals.user = user;
+        req.user = user;
         next();
       }
     });
