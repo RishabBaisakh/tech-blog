@@ -6,15 +6,15 @@ const blogSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    snippet: {
-      type: String,
-      required: true,
-    },
+    // tag: {
+    //   type: [String],
+    //   default: [],
+    // },
     body: {
       type: String,
       required: true,
     },
-    approval_status: {
+    approvalStatus: {
       type: String,
       enum: ["pending", "approved", "rejected"],
       default: "pending",
@@ -23,6 +23,14 @@ const blogSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Profile",
       required: true,
+    },
+    image: {
+      filename: String,
+      path: String,
+      url: String, // stored as a file path or CDN/cloud url
+      mimType: String,
+      size: Number,
+      originlName: String,
     },
   },
   { timestamps: true }

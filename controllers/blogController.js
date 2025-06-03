@@ -2,23 +2,34 @@ const Blog = require("../models/blog");
 const { findProfileByUser } = require("../utils/profileUtils");
 
 const blog_index = (req, res) => {
-  Blog.find()
-    .sort({ createdAt: -1 })
-    .then((result) => {
-      res.render("blogs/index", { title: "All Blogs", blogs: result });
+  // Only keep the approved blogs and the pending blogs from the current user
+  Blog.find({ approvalStatus: { $in: ["approved", "pending"] } })
+    .populate({
+      path: "profile",
+      populate: { path: "user" },
     })
-    .catch((err) => console.log(`Error while fetching blogs: ${err}`));
+    .then((blogs) => {
+      // Filter pending blogs by current user
+      const filtered = blogs.filter(
+        (blog) =>
+          blog.approvalStatus === "approved" ||
+          (blog.approvalStatus === "pending" &&
+            blog.profile.user._id.equals(req.user._id))
+      );
+      res.render("blogs/index", { title: "Filtered Blogs", blogs: filtered });
+    })
+    .catch(console.error);
 };
 
 const blog_detals = (req, res) => {
   const id = req.params.id;
 
   Blog.findById(id)
-    .then((result) => {
-      if (!result) {
+    .then((blog) => {
+      if (!blog) {
         res.render("blogs/notfound", { title: "Not Found" });
       }
-      res.render("blogs/detail", { blog: result, title: "Blog Details" });
+      res.render("blogs/detail", { blog: blog, title: "Blog Details" });
     })
     .catch((err) => res.render("404", { title: "Blog Not Found" }));
 };
@@ -41,7 +52,8 @@ const blog_create_post = async (req, res) => {
   // TODO: this is without form validation!
   try {
     const profile = await findProfileByUser(req.user);
-    const blog = new Blog({ ...req.body, profile });
+
+    const blog = new Blog({ ...req.body, image: req.file, profile });
 
     blog
       .save()

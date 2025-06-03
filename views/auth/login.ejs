@@ -43,11 +43,11 @@
         passwordErrors.textContent = data.errors.password;
       }
 
-      if (data.user) {
-        location.assign("/");
+      if (data.user && data.nextUrl) {
+        location.assign(data.nextUrl);
       }
     } catch (error) {
-      console.log("🚀 ~ LOGIN | form.addEventListener ~ error:", error);
+      console.log("Login View: Error occurred while login post method!", error);
     }
   });
 </script>

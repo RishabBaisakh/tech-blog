@@ -5,9 +5,11 @@ const mongoose = require("mongoose");
 const blogRoutes = require("./routes/blogRoutes");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 const cookieParser = require("cookie-parser");
 const { requireAuth, checkUser } = require("./middlewares/authMiddleware");
 const { checkProfile } = require("./middlewares/profileMiddleware");
+const { authorizeAdmin } = require("./middlewares/authorizeAdminMiddleware");
 
 // express app
 const app = express();
@@ -24,6 +26,7 @@ mongoose
     console.log("Error while connecting to the db: ", err.message);
     // process.exit(1);
   });
+// TODO: move it inside the mongoose connection completion!
 app.listen(3000);
 
 // register view engine
@@ -39,16 +42,12 @@ app.use(checkUser);
 app.use(checkProfile);
 
 // routes
-// app.get("/*name", checkUser);
-app.get("/", (req, res) => {
-  res.render("home", { title: "Home" });
-});
-app.use("/blogs", requireAuth, blogRoutes);
+app.use("/blogs", requireAuth, upload.single("image"), blogRoutes);
 app.use("/profile", requireAuth, upload.single("image"), profileRoutes);
 app.use("/", authRoutes);
-
-app.get("/about", (req, res) => {
-  res.render("about", { title: "About" });
+app.use("/dashboard", authorizeAdmin, dashboardRoutes);
+app.get("/", (req, res) => {
+  res.render("home", { title: "Home" });
 });
 
 // 404 page

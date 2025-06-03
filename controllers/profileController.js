@@ -36,7 +36,11 @@ module.exports.profile_create_post = async (req, res) => {
     if (existingProfile) {
       return res.redirect("/profile");
     } else {
-      const profile = new Profile({ ...req.body, image: req.file, user });
+      const profile = new Profile({
+        ...req.body,
+        image: req.file,
+        user: req.user,
+      });
       profile
         .save()
         .then((result) => {
