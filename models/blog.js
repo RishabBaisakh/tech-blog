@@ -14,6 +14,16 @@ const blogSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    approval_status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
+    profile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Profile",
+      required: true,
+    },
   },
   { timestamps: true }
 );

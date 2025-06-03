@@ -1,4 +1,5 @@
 const Blog = require("../models/blog");
+const { findProfileByUser } = require("../utils/profileUtils");
 
 const blog_index = (req, res) => {
   Blog.find()
@@ -14,6 +15,9 @@ const blog_detals = (req, res) => {
 
   Blog.findById(id)
     .then((result) => {
+      if (!result) {
+        res.render("blogs/notfound", { title: "Not Found" });
+      }
       res.render("blogs/detail", { blog: result, title: "Blog Details" });
     })
     .catch((err) => res.render("404", { title: "Blog Not Found" }));
@@ -33,14 +37,19 @@ const blog_delete = (req, res) => {
     );
 };
 
-const blog_create_post = (req, res) => {
-  // this is without form validation!
-  const blog = new Blog(req.body);
+const blog_create_post = async (req, res) => {
+  // TODO: this is without form validation!
+  try {
+    const profile = await findProfileByUser(req.user);
+    const blog = new Blog({ ...req.body, profile });
 
-  blog
-    .save()
-    .then((result) => res.redirect("/blogs"))
-    .catch((err) => console.log(`Error occured while creating new blog!`));
+    blog
+      .save()
+      .then((result) => res.redirect("/blogs"))
+      .catch((err) => console.log(`Error occured while creating new blog!`));
+  } catch {
+    console.log("Blog Create Post: Error occurred while fetching profile!");
+  }
 };
 
 module.exports = {

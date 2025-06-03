@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please enter a password"],
     minLength: [6, "Minimum password length is 6 characters"],
   },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+    required: true,
+  },
 });
 
 // Mongoose Middleware or Hooks
@@ -29,7 +35,7 @@ userSchema.pre("save", async function (next) {
 userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
   if (user) {
-    // compare hashed password
+    // compare hashed pass`word
     const auth = await bcrypt.compare(password, user.password);
     if (auth) {
       return user;
