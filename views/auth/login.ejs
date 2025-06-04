@@ -1,32 +1,74 @@
+<!-- TODO: Abstract most of the code from both login and signup -->
+
 <%- include("../partials/head.ejs") %> <%- include("../partials/nav.ejs") %>
-<div class="auth">
-  <form>
-    <h2>Login</h2>
-    <label for="email">Email</label>
-    <input type="text" name="email" required />
-    <div class="email error"></div>
-    <label for="password">Password</label>
-    <input type="password" name="password" required />
-    <div class="password error"></div>
-    <button>Login</button>
-  </form>
+<div class="card auth-form-width-custom mx-auto shadow-lg">
+  <div class="card-body">
+    <form class="needs-validation" novalidate>
+      <div class="form-floating mb-3">
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder="name@example.com"
+          required
+        />
+        <label for="email">Email address</label>
+        <div class="invalid-feedback">Email is required</div>
+      </div>
+      <div class="form-floating">
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          name="password"
+          placeholder="Password"
+          required
+        />
+        <label for="password">Password</label>
+        <div class="invalid-feedback">Password is required</div>
+      </div>
+      <button class="btn btn-primary w-100 mt-4">Login</button>
+    </form>
+  </div>
 </div>
 
 <script>
   const form = document.querySelector("form");
   const emailErrors = document.querySelector(".email.error");
   const passwordErrors = document.querySelector(".password.error");
+  const emailInput = form.email;
+  const passwordInput = form.password;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     // get the values!
-    const email = form.email.value;
-    const password = form.password.value;
+    const email = emailInput.value;
+    const password = passwordInput.value;
 
-    // reset errors
-    emailErrors.textContent = "";
-    passwordErrors.textContent = "";
+    // reset validation states
+    emailInput.classList.remove("is-invalid");
+    passwordInput.classList.remove("is-invalid");
+
+    let hasError = false;
+
+    if (!emailInput.value.trim()) {
+      emailInput.classList.add("is-invalid");
+      emailInput.nextElementSibling.nextElementSibling.textContent =
+        "Email is required.";
+      hasError = true;
+    }
+
+    if (!passwordInput.value.trim()) {
+      passwordInput.classList.add("is-invalid");
+      passwordInput.nextElementSibling.nextElementSibling.textContent =
+        "Password is required.";
+      hasError = true;
+    }
+
+    // stop if from the api call
+    if (hasError) return;
 
     try {
       const result = await fetch("/login", {
@@ -39,8 +81,17 @@
 
       const data = await result.json();
       if (data.errors) {
-        emailErrors.textContent = data.errors.email;
-        passwordErrors.textContent = data.errors.password;
+        if (data.errors.email) {
+          emailInput.classList.add("is-invalid");
+          emailInput.nextElementSibling.nextElementSibling.textContent =
+            data.errors.email;
+        }
+        if (data.errors.password) {
+          passwordInput.classList.add("is-invalid");
+          passwordInput.nextElementSibling.nextElementSibling.textContent =
+            data.errors.password;
+        }
+        return;
       }
 
       if (data.user && data.nextUrl) {

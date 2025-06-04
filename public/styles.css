@@ -1,4 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap");
+
+:root {
+  --auth-form-width: 400px;
+}
+
 body {
   max-width: 1200px !important;
   margin: 20px auto !important;
@@ -15,8 +20,15 @@ a,
 ul {
   margin: 0;
   padding: 0;
-  text-decoration: none;
+  text-decoration: none !important;
   color: #222;
+}
+
+/* auth forms */
+
+.auth-form-width-custom {
+  width: var(--auth-form-width);
+  max-width: 100%;
 }
 
 /* nav & footer styles */
@@ -136,36 +148,6 @@ textarea {
   background: rgb(227, 226, 226);
 }
 
-/* auth styles */
-.auth form h2 {
-  font-size: 2.4em;
-  font-weight: 900;
-  margin-bottom: 40px;
-}
-
-.auth form {
-  width: 360px;
-  margin: 0 auto;
-  padding: 30px;
-  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  background: white;
-}
-
-.auth form input {
-  padding: 10px 12px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  font-size: 1em;
-  width: 100%;
-}
-
-.auth form label {
-  display: block;
-  margin: 20px 0 10px;
-}
-
-.auth form button,
 nav .signup {
   margin-top: 30px;
   border-radius: 36px;
@@ -181,16 +163,4 @@ nav .signup {
 
 nav .signup {
   margin: 0 !important;
-}
-
-.auth form .error {
-  color: #ff0099;
-  margin: 10px 2px;
-  font-size: 0.8em;
-  font-weight: bold;
-}
-
-nav .auth-links {
-  display: flex;
-  align-items: center;
 }

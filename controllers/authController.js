@@ -43,7 +43,7 @@ const createToken = (id) => {
 };
 
 module.exports.signup_get = (req, res) => {
-  res.render("auth/signup", { title: "Sign Up" });
+  return res.render("auth/signup", { title: "Sign Up", path: req.path });
 };
 
 module.exports.signup_post = async (req, res) => {
@@ -54,15 +54,15 @@ module.exports.signup_post = async (req, res) => {
     const token = createToken(user._id);
     // requires time in miliseconds
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-    res.status(201).json({ user: user._id });
+    return res.status(201).json({ user: user._id });
   } catch (err) {
     const errors = handleErrors(err);
-    res.status(400).send({ errors });
+    return res.status(400).send({ errors });
   }
 };
 
 module.exports.login_get = async (req, res) => {
-  res.render("auth/login", { title: "Login" });
+  return res.render("auth/login", { title: "Login", path: req.path });
 };
 
 module.exports.login_post = async (req, res) => {
@@ -73,19 +73,17 @@ module.exports.login_post = async (req, res) => {
     const token = createToken(user._id);
     // requires time in miliseconds
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-    res
-      .status(200)
-      .json({
-        user: user._id,
-        nextUrl: user.role === "admin" ? "/dashboard" : "/blogs",
-      });
+    return res.status(200).json({
+      user: user._id,
+      nextUrl: user.role === "admin" ? "/dashboard" : "/blogs",
+    });
   } catch (err) {
     const errors = handleErrors(err);
-    res.status(400).json({ errors });
+    return res.status(400).json({ errors });
   }
 };
 
 module.exports.logout_get = (req, res) => {
   res.cookie("jwt", "", { maxAge: 1 });
-  res.redirect("/login");
+  return res.redirect("/login");
 };
