@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const path = require("path");
 const upload = require("./middlewares/uploadImageMiddleware");
 const mongoose = require("mongoose");
 const blogRoutes = require("./routes/blogRoutes");
@@ -41,7 +42,14 @@ app.use(cookieParser());
 app.use(checkUser);
 app.use(checkProfile);
 
+// Serve Bootstrap if installed via npm
+app.use(
+  "/bootstrap",
+  express.static(path.join(__dirname, "node_modules/bootstrap/dist"))
+);
+
 // routes
+// TODO: blogs should not be plural, think about it
 app.use("/blogs", requireAuth, upload.single("image"), blogRoutes);
 app.use("/profile", requireAuth, upload.single("image"), profileRoutes);
 app.use("/", authRoutes);

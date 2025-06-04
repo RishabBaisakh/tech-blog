@@ -6,8 +6,11 @@
     <h2>Admin Dashboard!</h2>
 
     <p>Pending Blogs</p>
+    <%- include("./partials/blogsTable.ejs", {blogs: pendingBlogs}) %>
     <p>Approved Blogs</p>
+    <%- include("./partials/blogsTable.ejs", {blogs: approvedBlogs}) %>
     <p>Rejected Blogs</p>
+    <%- include("./partials/blogsTable.ejs", {blogs: rejectedBlogs}) %>
     <p>Grant Admin Access</p>
   </div>
   <%- include('../partials/footer.ejs') %>

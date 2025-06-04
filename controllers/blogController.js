@@ -2,23 +2,37 @@ const Blog = require("../models/blog");
 const { findProfileByUser } = require("../utils/profileUtils");
 
 const blog_index = (req, res) => {
-  // Only keep the approved blogs and the pending blogs from the current user
-  Blog.find({ approvalStatus: { $in: ["approved", "pending"] } })
-    .populate({
-      path: "profile",
-      populate: { path: "user" },
-    })
-    .then((blogs) => {
-      // Filter pending blogs by current user
-      const filtered = blogs.filter(
-        (blog) =>
-          blog.approvalStatus === "approved" ||
-          (blog.approvalStatus === "pending" &&
-            blog.profile.user._id.equals(req.user._id))
-      );
-      res.render("blogs/index", { title: "Filtered Blogs", blogs: filtered });
-    })
-    .catch(console.error);
+  // Create 2 calls based on the role: admin | user
+  if (req?.user?.role === "user") {
+    // User
+    // Only keep the approved blogs and the pending blogs from the current user
+    Blog.find({ approvalStatus: { $in: ["approved", "pending"] } })
+      .populate({
+        path: "profile",
+        populate: { path: "user" },
+      })
+      .sort({ createdAt: -1 })
+      .then((blogs) => {
+        // Filter pending blogs by current user
+        const filtered = blogs.filter(
+          (blog) =>
+            blog.approvalStatus === "approved" ||
+            (blog.approvalStatus === "pending" &&
+              blog.profile.user._id.equals(req.user._id))
+        );
+        res.render("blogs/index", { title: "Filtered Blogs", blogs: filtered });
+      })
+      .catch(console.error);
+  } else {
+    console.log("role", req.user.role);
+    // Admin
+    Blog.find()
+      .sort({ createdAt: -1 })
+      .then((blogs) => {
+        res.render("blogs/index", { title: "Filtered Blogs", blogs });
+      })
+      .catch(console.error);
+  }
 };
 
 const blog_detals = (req, res) => {
