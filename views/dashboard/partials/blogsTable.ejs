@@ -1,37 +1,26 @@
-<table class="table">
-  <thead>
+<table class="table table-hover align-middle">
+  <thead class="table-light">
     <tr>
-      <th scope="col">Title</th>
-      <th scope="col">Email</th>
-      <th scope="col">Approval Status</th>
-      <th scope="col">Created At</th>
-      <th scope="col"></th>
+      <th class="text-nowrap" style="width: 300px">Title</th>
+      <th>Author</th>
+      <th>Date</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <% blogs.forEach(blog => { %>
     <tr>
-      <th scope="row"><%= blog.title %></th>
-      <td><%= blog.profile.user.email %></td>
-      <td><%= blog.approvalStatus %></td>
-      <td><%= blog.createdAt %></td>
+      <td class="text-truncate" style="max-width: 300px"><%= blog.title %></td>
+      <td><%= blog.profile.firstName %> <%= blog.profile.lastName %></td>
       <td>
-        <a class="icon-link icon-link-hover" href="/blogs/<%= blog._id %>">
-          View
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="bi"
-            viewBox="0 0 16 16"
-            aria-hidden="true"
-          >
-            <path
-              d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"
-            />
-          </svg>
-        </a>
+        <%= new Date(blog.createdAt).toLocaleString('en-US', { year: 'numeric',
+        month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
+        hour12: true }) %>
+      </td>
+      <td>
+        <!-- action buttons -->
       </td>
     </tr>
     <% }) %>
   </tbody>
 </table>
-;

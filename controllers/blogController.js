@@ -25,7 +25,6 @@ const blog_index = (req, res) => {
       })
       .catch(console.error);
   } else {
-    console.log("role", req.user.role);
     // Admin
     Blog.find()
       .sort({ createdAt: -1 })

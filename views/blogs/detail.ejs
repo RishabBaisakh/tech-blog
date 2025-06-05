@@ -3,27 +3,40 @@
   <%- include('../partials/nav.ejs') %>
 
   <main class="container py-5">
+    <div class="d-flex justify-content-between mb-3">
+      <a class="icon-link icon-link-hover" href="/blogs">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="bi"
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+          width="16"
+          height="16"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M15 8a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 7.5H14.5a.5.5 0 0 1 .5.5z"
+          />
+        </svg>
+        Back to Blogs
+      </a>
+      <a href="#" class="btn btn-danger" data-doc="<%= blog._id %>">
+        <i class="bi bi-trash"></i> Delete Blog
+      </a>
+    </div>
     <div class="card shadow-lg">
       <% if (blog.image && blog.image.filename) { %>
       <img
         src="/uploads/<%= blog.image.filename %>"
         class="card-img-top"
+        style="height: 300px"
         alt="Blog Image"
       />
       <% } %>
       <div class="card-body">
         <h2 class="card-title mb-3"><%= blog.title %></h2>
         <p class="card-text fs-5"><%= blog.body %></p>
-
-        <div class="mt-4 d-flex justify-content-between">
-          <a href="/blogs" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Blogs
-          </a>
-
-          <a href="#" class="btn btn-danger delete" data-doc="<%= blog._id %>">
-            <i class="bi bi-trash"></i> Delete Blog
-          </a>
-        </div>
       </div>
     </div>
   </main>

@@ -2,16 +2,46 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="dashboard content">
-    <h2>Admin Dashboard!</h2>
+  <main class="container py-5">
+    <!-- Pending Blogs -->
+    <section class="mb-5 card shadow">
+      <div class="card-body">
+        <h4>
+          <span class="badge bg-warning text-dark">Pending Blogs</span>
+        </h4>
+        <%- include("./partials/blogsTable.ejs", { blogs: pendingBlogs }) %>
+      </div>
+    </section>
 
-    <p>Pending Blogs</p>
-    <%- include("./partials/blogsTable.ejs", {blogs: pendingBlogs}) %>
-    <p>Approved Blogs</p>
-    <%- include("./partials/blogsTable.ejs", {blogs: approvedBlogs}) %>
-    <p>Rejected Blogs</p>
-    <%- include("./partials/blogsTable.ejs", {blogs: rejectedBlogs}) %>
-    <p>Grant Admin Access</p>
+    <!-- Approved Blogs -->
+    <section class="mb-5 card shadow">
+      <div class="card-body">
+        <h4>
+          <span class="badge bg-success">Approved Blogs</span>
+        </h4>
+        <%- include("./partials/blogsTable.ejs", { blogs: approvedBlogs }) %>
+      </div>
+    </section>
+
+    <!-- Rejected Blogs -->
+    <section class="mb-5 card shadow">
+      <div class="card-body">
+        <h4>
+          <span class="badge bg-danger">Rejected Blogs</span>
+        </h4>
+        <%- include("./partials/blogsTable.ejs", { blogs: rejectedBlogs }) %>
+      </div>
+    </section>
+
+    <!-- Admin Access -->
+    <section class="mt-5">
+      <h4 class="mb-3">
+        <span class="badge bg-primary">Grant Admin Access</span>
+      </h4>
+      <!-- Add admin form or functionality here -->
+      <p class="text-muted">Feature coming soon.</p>
+    </section>
   </main>
+
   <%- include('../partials/footer.ejs') %>
 </body>

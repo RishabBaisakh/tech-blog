@@ -2,7 +2,7 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="container py-5">
+  <main class="container py-5 blogs">
     <div class="row g-4">
       <% if (blogs.length > 0) { %> <% blogs.forEach(blog => { %>
       <div class="col-md-6 col-lg-4">
@@ -13,33 +13,48 @@
           >
             <img
               src="/uploads/<%= blog.image.filename %>"
-              class="card-img-top"
+              class="card-img-top custom-img-height"
               alt="Blog Image"
             />
             <div class="card-body">
               <h5 class="card-title"><%= blog.title %></h5>
-              <p class="card-text text-muted">
+              <p class="card-text text-muted custom-blog-body-height">
                 <%= blog.body.length > 100 ? blog.body.substring(0, 100) + '...'
                 : blog.body %>
               </p>
             </div>
-            <div
-              class="card-footer d-flex justify-content-between small text-muted"
-            >
-              <span><%= new Date(blog.createdAt).toLocaleDateString() %></span>
-              <span
-                ><%= blog.profile.firstName %> <%= blog.profile.lastName
-                %></span
-              >
-              <% if (blog.approvalStatus === "pending") { %>
-              <span class="badge bg-warning"><%= blog.approvalStatus %></span>
-              <% } else if (blog.approvalStatus === "approved") { %>
-              <span class="badge bg-success"><%= blog.approvalStatus %></span>
-              <% } else { %>
-              <span class="badge bg-danger"><%= blog.approvalStatus %></span>
-              <% } %>
-            </div>
           </a>
+
+          <div class="px-3 pb-2 d-flex justify-content-end">
+            <button
+              class="btn btn-outline-primary btn-sm comment-button me-2"
+              data-id="<%= blog._id %>"
+            >
+              <i class="bi bi-chat"></i>
+            </button>
+            <button
+              class="btn btn-outline-danger btn-sm like-button"
+              data-id="<%= blog._id %>"
+            >
+              <i class="bi bi-heart"></i>
+            </button>
+          </div>
+
+          <div
+            class="card-footer d-flex justify-content-between small text-muted"
+          >
+            <span><%= new Date(blog.createdAt).toLocaleDateString() %></span>
+            <span
+              ><%= blog.profile.firstName %> <%= blog.profile.lastName %></span
+            >
+            <% if (blog.approvalStatus === "pending") { %>
+            <span class="badge bg-warning"><%= blog.approvalStatus %></span>
+            <% } else if (blog.approvalStatus === "approved") { %>
+            <span class="badge bg-success"><%= blog.approvalStatus %></span>
+            <% } else { %>
+            <span class="badge bg-danger"><%= blog.approvalStatus %></span>
+            <% } %>
+          </div>
         </div>
       </div>
       <% }) %> <% } else { %>
