@@ -1,16 +1,27 @@
-<html lang="en">
-  <%- include("../partials/head.ejs") %>
-  <body>
-    <%- include('../partials/nav.ejs') %>
+<%- include("../partials/head.ejs") %>
+<body>
+  <%- include('../partials/nav.ejs') %>
 
-    <!-- TODO: fix styles -->
-    <div class="content profile">
-      <a href="/profile/edit">Edit Profile</a>
-      <h1>Profile Page</h1>
-      <p><%= profile.firstName %></p>
-      <p><%= profile.lastName %></p>
-      <img src="uploads/<%= profile.image.filename %>" alt="ProfileImage" />
+  <div class="container py-5">
+    <div class="card mx-auto" style="max-width: 500px">
+      <div class="card-body text-center d-flex flex-column">
+        <img
+          src="/uploads/<%= profile.image.filename %>"
+          alt="Profile Image"
+          class="img-thumbnail rounded-circle mb-3 mx-auto shadow"
+          style="width: 150px; height: 150px; object-fit: cover"
+        />
+        <p class="card-text">
+          <strong>First Name:</strong> <%= profile.firstName %>
+        </p>
+        <p class="card-text">
+          <strong>Last Name:</strong> <%= profile.lastName %>
+        </p>
+        <a href="/profile/edit" class="btn btn-outline-primary mb-3 float-end"
+          >Edit Profile</a
+        >
+      </div>
     </div>
-    <%- include('../partials/footer.ejs') %>
-  </body>
-</html>
+  </div>
+  <%- include('../partials/footer.ejs') %>
+</body>

@@ -95,7 +95,6 @@ module.exports.profile_update_post = async (req, res) => {
         .catch((err) => {
           console.log("Error occurred while updating the profile!", err);
         });
-      return res.redirect("/profile");
     }
   } catch (err) {
     console.log(

@@ -1,38 +1,61 @@
-<html lang="en">
-  <%- include("../partials/head.ejs") %>
-  <body>
-    <%- include('../partials/nav.ejs') %>
+<%- include("../partials/head.ejs") %>
+<body>
+  <%- include('../partials/nav.ejs') %>
 
-    <div class="content profile edit-profile">
-      <form
-        action="/profile/create"
-        method="POST"
-        enctype="multipart/form-data"
-      >
-        <label for="firstName">First Name:</label>
-        <input
-          type="text"
-          id="firstName"
-          name="firstName"
-          value="<%= profile.firstName %>"
-          required
-        />
+  <div class="container py-5">
+    <div class="card mx-auto" style="max-width: 500px">
+      <div class="card-body">
+        <h2 class="card-title mb-4">Edit Profile</h2>
+        <form
+          action="/profile/update"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <div class="mb-3">
+            <label for="firstName" class="form-label">First Name:</label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              value="<%= profile.firstName %>"
+              class="form-control"
+              required
+            />
+          </div>
 
-        <label for="lastName">Last Name:</label>
-        <input
-          type="text"
-          id="lastName"
-          name="lastName"
-          value="<%= profile.firstName %>"
-          required
-        />
+          <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name:</label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              value="<%= profile.lastName %>"
+              class="form-control"
+              required
+            />
+          </div>
 
-        <label for="image">Image:</label>
-        <input type="file" id="image" name="image" />
-        <img src="/uploads/<%= profile.image.filename %>" alt="ProfileImage" />
-        <button>Submit</button>
-      </form>
+          <div class="mb-3">
+            <label for="image" class="form-label">Image:</label>
+            <input type="file" id="image" name="image" class="form-control" />
+          </div>
+
+          <% if (profile.image && profile.image.filename) { %>
+          <div class="mb-3 text-center">
+            <img
+              src="/uploads/<%= profile.image.filename %>"
+              alt="Profile Image"
+              class="img-thumbnail rounded-circle"
+              style="width: 150px; height: 150px; object-fit: cover"
+            />
+          </div>
+          <% } %>
+
+          <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </form>
+      </div>
     </div>
-    <%- include('../partials/footer.ejs') %>
-  </body>
-</html>
+  </div>
+
+  <%- include('../partials/footer.ejs') %>
+</body>

@@ -33,6 +33,12 @@ app.listen(3000);
 // register view engine
 app.set("view engine", "ejs");
 
+// Serve Bootstrap
+app.use(
+  "/bootstrap",
+  express.static(path.join(__dirname, "node_modules/bootstrap/dist"))
+);
+
 // middleware and static files
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
@@ -41,12 +47,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(checkUser);
 app.use(checkProfile);
-
-// Serve Bootstrap if installed via npm
-app.use(
-  "/bootstrap",
-  express.static(path.join(__dirname, "node_modules/bootstrap/dist"))
-);
 
 // routes
 // TODO: blogs should not be plural, think about it
