@@ -2,21 +2,55 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <div class="blogs content">
-    <% if (blogs.length > 0) { %> <% blogs.forEach(blog => { %>
+  <main class="container py-5">
+    <div class="row g-4">
+      <% if (blogs.length > 0) { %> <% blogs.forEach(blog => { %>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <a
+            href="/blogs/<%= blog._id %>"
+            class="text-decoration-none text-dark"
+          >
+            <img
+              src="/uploads/<%= blog.image.filename %>"
+              class="card-img-top"
+              alt="Blog Image"
+            />
+            <div class="card-body">
+              <h5 class="card-title"><%= blog.title %></h5>
+              <p class="card-text text-muted">
+                <%= blog.body.length > 100 ? blog.body.substring(0, 100) + '...'
+                : blog.body %>
+              </p>
+            </div>
+            <div
+              class="card-footer d-flex justify-content-between small text-muted"
+            >
+              <span><%= new Date(blog.createdAt).toLocaleDateString() %></span>
+              <span
+                ><%= blog.profile.firstName %> <%= blog.profile.lastName
+                %></span
+              >
+              <% if (blog.approvalStatus === "pending") { %>
+              <span class="badge bg-warning"><%= blog.approvalStatus %></span>
+              <% } else if (blog.approvalStatus === "approved") { %>
+              <span class="badge bg-success"><%= blog.approvalStatus %></span>
+              <% } else { %>
+              <span class="badge bg-danger"><%= blog.approvalStatus %></span>
+              <% } %>
+            </div>
+          </a>
+        </div>
+      </div>
+      <% }) %> <% } else { %>
+      <div class="col-12">
+        <div class="alert alert-info text-center">
+          There are no blogs to display.
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </main>
 
-    <a class="single" href="/blogs/<%= blog._id %>">
-      <h3 class="title"><%= blog.title %></h3>
-      <p class="snippet"><%= blog.body %></p>
-      <img src="uploads/<%= blog.image.filename %>" alt="Blog Image" />
-      <p><%= blog.createdAt %></p>
-      <p><%= blog.profile.firstName %> <%= blog.profile.lastName %></p>
-      <p>(<%= blog.approvalStatus %>)</p>
-    </a>
-
-    <% }) %> <% } else { %>
-    <p>There are no blogs to display</p>
-    <% } %>
-  </div>
   <%- include('../partials/footer.ejs') %>
 </body>

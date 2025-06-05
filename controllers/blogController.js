@@ -6,7 +6,7 @@ const blog_index = (req, res) => {
   if (req?.user?.role === "user") {
     // User
     // Only keep the approved blogs and the pending blogs from the current user
-    Blog.find({ approvalStatus: { $in: ["approved", "pending"] } })
+    Blog.find()
       .populate({
         path: "profile",
         populate: { path: "user" },
@@ -17,7 +17,8 @@ const blog_index = (req, res) => {
         const filtered = blogs.filter(
           (blog) =>
             blog.approvalStatus === "approved" ||
-            (blog.approvalStatus === "pending" &&
+            ((blog.approvalStatus === "pending" ||
+              blog.approvalStatus === "rejected") &&
               blog.profile.user._id.equals(req.user._id))
         );
         res.render("blogs/index", { title: "Filtered Blogs", blogs: filtered });
