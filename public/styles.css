@@ -143,3 +143,9 @@ nav .signup {
 nav .signup {
   margin: 0 !important;
 }
+
+/* modal */
+.modal-footer .close-button {
+  padding: 3px;
+  font-size: 32px;
+}

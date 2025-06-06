@@ -1,0 +1,45 @@
+<button
+  class="btn btn-outline-primary btn-sm comment-button me-2"
+  data-toggle="modal"
+  data-target="#commentModal"
+>
+  <i class="bi bi-chat"></i>
+</button>
+
+<div
+  class="modal fade"
+  id="commentModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="commentModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="commentModalLabel">Modal title</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <% if (!comments) { %> Your comment will be first! <% } %>
+      </div>
+      <div class="modal-footer d-flex">
+        <input
+          type="text"
+          class="form-control w-auto flex-grow-1"
+          id="comment"
+          name="comment"
+          placeholder="Comment..."
+        />
+        <button
+          class="btn btn-outline-primary bi bi-arrow-right-square-fill close-button"
+        ></button>
+      </div>
+    </div>
+  </div>
+</div>
