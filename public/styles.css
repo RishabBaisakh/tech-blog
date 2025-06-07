@@ -149,3 +149,8 @@ nav .signup {
   padding: 3px;
   font-size: 32px;
 }
+
+/* backgrounds */
+.bg-light-blue {
+  background-color: #e8f1fb !important;
+}

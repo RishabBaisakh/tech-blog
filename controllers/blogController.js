@@ -11,6 +11,7 @@ const blog_index = (req, res) => {
         path: "profile",
         populate: { path: "user" },
       })
+      .populate({ path: "comments", populate: { path: "author" } })
       .sort({ createdAt: -1 })
       .then((blogs) => {
         // Filter pending blogs by current user
@@ -24,7 +25,6 @@ const blog_index = (req, res) => {
         res.render("blogs/index", {
           title: "Filtered Blogs",
           blogs: filtered,
-          comments: null,
         });
       })
       .catch(console.error);

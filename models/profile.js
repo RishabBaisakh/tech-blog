@@ -23,6 +23,8 @@ const profileSchema = mongoose.Schema(
       ref: "User",
       required: true,
     },
+    // TODO: Finish this!
+    // about: {},
   },
   { timestamps: true }
 );

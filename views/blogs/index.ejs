@@ -7,6 +7,7 @@
       <% if (blogs.length > 0) { %> <% blogs.forEach(blog => { %>
       <div class="col-md-6 col-lg-4">
         <div class="card h-100 shadow-sm">
+          <!-- Blog Link Wrapper -->
           <a
             href="/blogs/<%= blog._id %>"
             class="text-decoration-none text-dark"
@@ -25,8 +26,11 @@
             </div>
           </a>
 
-          <div class="px-3 pb-2 d-flex justify-content-end">
-            <%- include('./commentModal.ejs') %>
+          <!-- Actions: only show if approved -->
+          <% if (blog.approvalStatus === "approved") { %>
+          <div class="px-3 pb-2 d-flex justify-content-end gap-2">
+            <%- include('./commentModal.ejs', { comments: blog.comments, blogId:
+            blog._id }) %>
             <button
               class="btn btn-outline-danger btn-sm like-button"
               data-id="<%= blog._id %>"
@@ -34,16 +38,23 @@
               <i class="bi bi-heart"></i>
             </button>
           </div>
+          <% } %>
 
+          <!-- Always show footer -->
           <div
-            class="card-footer d-flex justify-content-between small text-muted"
+            class="card-footer d-flex flex-wrap justify-content-between align-items-center small text-muted mt-auto"
           >
-            <span><%= new Date(blog.createdAt).toLocaleDateString() %></span>
+            <span
+              ><%= new Date(blog.createdAt).toLocaleDateString('en-US', { year:
+              'numeric', month: 'short', day: 'numeric' }) %></span
+            >
             <span
               ><%= blog.profile.firstName %> <%= blog.profile.lastName %></span
             >
             <% if (blog.approvalStatus === "pending") { %>
-            <span class="badge bg-warning"><%= blog.approvalStatus %></span>
+            <span class="badge bg-warning text-dark"
+              ><%= blog.approvalStatus %></span
+            >
             <% } else if (blog.approvalStatus === "approved") { %>
             <span class="badge bg-success"><%= blog.approvalStatus %></span>
             <% } else { %>

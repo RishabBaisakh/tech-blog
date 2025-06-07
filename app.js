@@ -7,6 +7,7 @@ const blogRoutes = require("./routes/blogRoutes");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const commentRoutes = require("./routes/commentRoutes");
 const cookieParser = require("cookie-parser");
 const { requireAuth, checkUser } = require("./middlewares/authMiddleware");
 const { checkProfile } = require("./middlewares/profileMiddleware");
@@ -52,6 +53,7 @@ app.use(checkProfile);
 // TODO: blogs should not be plural, think about it
 app.use("/blogs", requireAuth, upload.single("image"), blogRoutes);
 app.use("/profile", requireAuth, upload.single("image"), profileRoutes);
+app.use("/comment", requireAuth, commentRoutes);
 app.use("/", authRoutes);
 app.use("/dashboard", authorizeAdmin, dashboardRoutes);
 app.get("/", (req, res) => {
