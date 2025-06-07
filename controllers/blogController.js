@@ -22,6 +22,7 @@ const blog_index = (req, res) => {
               blog.approvalStatus === "rejected") &&
               blog.profile.user._id.equals(req.user._id))
         );
+        console.log("🚀 ~ .then ~ filtered:", filtered);
         res.render("blogs/index", {
           title: "Filtered Blogs",
           blogs: filtered,

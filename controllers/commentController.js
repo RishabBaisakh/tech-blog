@@ -5,7 +5,6 @@ const Blog = require("../models/blog");
 module.exports.comment_post = async (req, res) => {
   const user = req.user;
   const blogId = req.body.blogId;
-  console.log("Is it even coming here!");
 
   try {
     const profile = await Profile.findOne({ user: user._id });
@@ -18,8 +17,12 @@ module.exports.comment_post = async (req, res) => {
       return res.redirect("/blogs");
     } else {
       // TODO: return comments for the approval status: rejected | pending
+      const newComment = new Comment({
+        content: req.body.content,
+        author: profile,
+      });
 
-      const newComment = { content: req.body.content, author: profile };
+      await newComment.save();
 
       blog.comments.push(newComment);
 

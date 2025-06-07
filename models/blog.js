@@ -33,8 +33,8 @@ const blogSchema = new mongoose.Schema(
       size: Number,
       originlName: String,
     },
-    likes: {},
-    comments: [commentSchema],
+    likes: [],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   },
   { timestamps: true }
 );
