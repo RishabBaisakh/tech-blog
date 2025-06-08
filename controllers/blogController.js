@@ -1,42 +1,40 @@
 const Blog = require("../models/blog");
+const Profile = require("../models/profile");
 const { findProfileByUser } = require("../utils/profileUtils");
 
-const blog_index = (req, res) => {
-  // Create 2 calls based on the role: admin | user
-  if (req?.user?.role === "user") {
-    // User
-    // Only keep the approved blogs and the pending blogs from the current user
-    Blog.find()
-      .populate({
-        path: "profile",
-        populate: { path: "user" },
+const blog_index = async (req, res) => {
+  try {
+    let blogs = [];
+    const profile = await findProfileByUser(req.user);
+
+    if (req?.user?.role === "user") {
+      blogs = await Blog.find({
+        $or: [
+          { approvalStatus: "approved" },
+          {
+            approvalStatus: { $in: ["pending", "rejected"] },
+            profile: profile._id,
+          },
+        ],
       })
-      .populate({ path: "comments", populate: { path: "author" } })
-      .sort({ createdAt: -1 })
-      .then((blogs) => {
-        // Filter pending blogs by current user
-        const filtered = blogs.filter(
-          (blog) =>
-            blog.approvalStatus === "approved" ||
-            ((blog.approvalStatus === "pending" ||
-              blog.approvalStatus === "rejected") &&
-              blog.profile.user._id.equals(req.user._id))
-        );
-        console.log("🚀 ~ .then ~ filtered:", filtered);
-        res.render("blogs/index", {
-          title: "Filtered Blogs",
-          blogs: filtered,
-        });
-      })
-      .catch(console.error);
-  } else {
-    // Admin
-    Blog.find()
-      .sort({ createdAt: -1 })
-      .then((blogs) => {
-        res.render("blogs/index", { title: "Filtered Blogs", blogs });
-      })
-      .catch(console.error);
+        .populate({ path: "profile", populate: { path: "user" } })
+        .populate({ path: "comments", populate: { path: "author" } })
+        .sort({ createdAt: -1 });
+    } else {
+      blogs = await Blog.find()
+        .populate({ path: "profile", populate: { path: "user" } })
+        .populate({ path: "comments", populate: { path: "author" } })
+        .sort({ createdAt: -1 });
+    }
+
+    res.render("blogs/index", {
+      title: "Filtered Blogs",
+      blogs,
+      currentProfileId: profile._id.toString() || null,
+    });
+  } catch (err) {
+    console.log("Blog Index: Error occurred while fetching blogs!", err);
+    res.status(500).send("Server Error");
   }
 };
 
@@ -83,10 +81,79 @@ const blog_create_post = async (req, res) => {
   }
 };
 
+const blog_like_post = async (req, res) => {
+  const blogId = req.params.id;
+
+  try {
+    // TODO: Abstract this repeating piece of logic
+    const profile = await Profile.findOne({ user: req.user._id });
+    if (!profile) {
+      return res.send("PROFILE_NOT_FOUND");
+    }
+
+    const blog = await Blog.findOne({ _id: blogId }).populate("likes");
+
+    const hasLiked = blog.likes.includes(profile._id);
+
+    if (hasLiked) return res.send("ALREADY_LIKED");
+
+    if (!blog) {
+      return res.send("BLOG_NOT_FOUND");
+    }
+    blog.likes.push(profile);
+
+    blog
+      .save()
+      .then((result) => res.json({ result }))
+      .catch((err) => {
+        console.log("Blog Like Post: Error occurred while saving like!");
+      });
+  } catch (err) {
+    console.log("Blog Like Post: Error occurred while fetch the blog/profile!");
+  }
+};
+
+const blog_unlike_post = async (req, res) => {
+  const blogId = req.params.id;
+
+  try {
+    const blog = await Blog.findOne({ _id: blogId });
+
+    const profile = await findProfileByUser(req.user);
+
+    if (!blog) {
+      return res.send("BLOG_NOT_FOUND");
+    }
+
+    const result = await Blog.updateOne(
+      { _id: blogId },
+      { $pull: { likes: profile._id } }
+    );
+    if (result.modifiedCount === 0) {
+      return res.status(200).json({
+        message: "User had not liked the post previously.",
+        result,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Successfully unliked the blog.",
+      result,
+    });
+  } catch (err) {
+    console.log(
+      "Blog Unlike Post: Error occurred while fetching blog/profile!",
+      err
+    );
+  }
+};
+
 module.exports = {
   blog_index,
   blog_detals,
   blog_create_get,
   blog_delete,
   blog_create_post,
+  blog_like_post,
+  blog_unlike_post,
 };

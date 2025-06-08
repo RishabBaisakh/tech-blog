@@ -33,7 +33,7 @@ const blogSchema = new mongoose.Schema(
       size: Number,
       originlName: String,
     },
-    likes: [],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Profile" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   },
   { timestamps: true }

@@ -3,10 +3,11 @@ const Profile = require("../models/profile");
 const findProfileByUser = async (user) => {
   if (!user) return null;
   try {
-    const profile = await Profile.findOne({ user: user._id });
-    return profile;
+    return await Profile.findOne({ user: user._id });
   } catch (err) {
-    console.log("findProfileByUser: Error while fetching the profile!");
+    console.log(
+      "profileUtils - findProfileByUser: Error while fetching the profile!"
+    );
     throw err;
   }
 };
