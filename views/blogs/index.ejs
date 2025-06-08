@@ -2,7 +2,8 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="container py-5 blogs">
+  <main class="container pt-2 pb-5 blogs">
+    <div class="row mb-3"><%- include("./createModal") %></div>
     <div class="row g-4">
       <% if (blogs.length > 0) { %> <% blogs.forEach(blog => { %>
       <div class="col-md-6 col-lg-4">
@@ -31,10 +32,10 @@
             blog._id }) %> <% if (blog.likes.map(like =>
             like.toString()).includes(currentProfileId)) { %>
             <button
-              class="btn btn-outline-danger btn-sm unlike-button"
+              class="btn btn-outline-danger btn-sm dislike-button"
               data-id="<%= blog._id %>"
             >
-              <i class="bi bi-heart-fill text-danger"></i> Unlike
+              <i class="bi bi-heart-fill text-danger"></i> Dislike
             </button>
             <% } else { %>
             <button
@@ -83,7 +84,7 @@
 
   <script>
     const likeButtons = document.querySelectorAll(".like-button");
-    const unlikeButtons = document.querySelectorAll(".unlike-button");
+    const dislikeButtons = document.querySelectorAll(".dislike-button");
 
     likeButtons.forEach((button) => {
       const blogId = button.getAttribute("data-id");
@@ -94,21 +95,19 @@
             "Content-Type": "application/json",
           },
         });
-        console.log("🚀 ~ LIKE: button.addEventListener ~ result:", result);
       });
     });
 
-    unlikeButtons.forEach(async (button) => {
+    dislikeButtons.forEach(async (button) => {
       const blogId = button.getAttribute("data-id");
 
       button.addEventListener("click", async (e) => {
-        const result = await fetch(`/blogs/${blogId}/unlike`, {
+        const result = await fetch(`/blogs/${blogId}/dislike`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
         });
-        console.log("🚀 ~ UNLIKE: button.addEventListener ~ result:", result);
       });
     });
   </script>

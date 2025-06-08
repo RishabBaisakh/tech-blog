@@ -51,10 +51,6 @@ const blog_detals = (req, res) => {
     .catch((err) => res.render("404", { title: "Blog Not Found" }));
 };
 
-const blog_create_get = (req, res) => {
-  res.render("blogs/create", { title: "Create New Blog" });
-};
-
 const blog_delete = (req, res) => {
   const id = req.params.id;
 
@@ -113,7 +109,7 @@ const blog_like_post = async (req, res) => {
   }
 };
 
-const blog_unlike_post = async (req, res) => {
+const blog_dislike_post = async (req, res) => {
   const blogId = req.params.id;
 
   try {
@@ -137,12 +133,12 @@ const blog_unlike_post = async (req, res) => {
     }
 
     return res.status(200).json({
-      message: "Successfully unliked the blog.",
+      message: "Successfully dislike the blog.",
       result,
     });
   } catch (err) {
     console.log(
-      "Blog Unlike Post: Error occurred while fetching blog/profile!",
+      "Blog Dislike Post: Error occurred while fetching blog/profile!",
       err
     );
   }
@@ -151,9 +147,8 @@ const blog_unlike_post = async (req, res) => {
 module.exports = {
   blog_index,
   blog_detals,
-  blog_create_get,
   blog_delete,
   blog_create_post,
   blog_like_post,
-  blog_unlike_post,
+  blog_dislike_post,
 };
