@@ -16,7 +16,12 @@
 >
   <div class="modal-dialog">
     <div class="modal-content">
-      <form action="/blogs/create" method="POST" enctype="multipart/form-data">
+      <form
+        action="/blogs/create"
+        method="POST"
+        enctype="multipart/form-data"
+        id="create-blog-form"
+      >
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="createBlogModalLabel">
             Create a New Blog
@@ -51,9 +56,21 @@
             ></textarea>
           </div>
 
-          <div class="mb-4">
+          <div class="mb-3">
             <label for="image" class="form-label">Image</label>
             <input type="file" class="form-control" id="image" name="image" />
+          </div>
+
+          <div class="mb-4">
+            <label for="tags" class="form-label">Tag</label>
+            <select
+              class="form-select"
+              aria-label="Select upto five tags."
+              name="tags"
+              id="tags"
+              multiple
+            ></select>
+            <div class="tag-list"></div>
           </div>
         </div>
         <div class="modal-footer">
@@ -65,9 +82,47 @@
 </div>
 
 <script>
+  const getTags = async () => {
+    try {
+      // fetch tags!
+      const res = await fetch("/tags");
+      if (!res.ok) throw new Error("Failed to fetch tags.");
+
+      return (await res.json())?.tags ?? [];
+    } catch (err) {
+      console.log("Error occurred while fetching the tags!", err);
+      return [];
+    }
+  };
+
   const createBlogModal = document.getElementById("createBlogModal");
-  createBlogModal.addEventListener("hidden.bs.modal", function () {
-    const form = createBlogModal.querySelector("form");
-    form.reset();
+
+  createBlogModal.addEventListener("show.bs.modal", async () => {
+    const tags = await getTags();
+    const tagsSelect = createBlogModal.querySelector("#tags");
+
+    tags.forEach((tag) => {
+      const option = document.createElement("option");
+      option.value = tag._id;
+      option.textContent = tag.label;
+      tagsSelect.appendChild(option);
+    });
+
+    const choices = new Choices(tagsSelect, {
+      removeItemButton: true,
+      placeholderValue: "Select up to five tags",
+      searchPlaceholderValue: "Search tags",
+      closeDropdownOnSelect: false,
+      maxItemCount: 5,
+      maxItemText: (maxItemCount) => {
+        return `You can select up to a maximum of ${maxItemCount} tags only.`;
+      },
+    });
+
+    createBlogModal.querySelector("#tags");
+  });
+
+  createBlogModal.addEventListener("hidden.bs.modal", () => {
+    createBlogModal.querySelector("form").reset();
   });
 </script>

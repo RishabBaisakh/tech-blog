@@ -2,6 +2,7 @@
 
 :root {
   --auth-form-width: 400px;
+  --blog-tag-background-color: #84a2b5;
 }
 
 body {
@@ -153,4 +154,10 @@ nav .signup {
 /* backgrounds */
 .bg-light-blue {
   background-color: #e8f1fb !important;
+}
+
+/* create modal form */
+#create-blog-form .choices__list--multiple .choices__item {
+  background-color: var(--blog-tag-background-color) !important;
+  color: white;
 }

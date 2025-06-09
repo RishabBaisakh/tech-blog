@@ -7,10 +7,7 @@ const blogSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // tag: {
-    //   type: [String],
-    //   default: [],
-    // },
+    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
     body: {
       type: String,
       required: true,

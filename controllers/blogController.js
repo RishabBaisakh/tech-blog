@@ -54,6 +54,7 @@ const blog_detals = (req, res) => {
 const blog_delete = (req, res) => {
   const id = req.params.id;
 
+  // TODO: implement try/catch everywhere!
   Blog.findByIdAndDelete(id)
     .then((result) => res.json({ redirect: "/blogs" }))
     .catch((err) =>
@@ -83,6 +84,7 @@ const blog_like_post = async (req, res) => {
   try {
     // TODO: Abstract this repeating piece of logic
     const profile = await Profile.findOne({ user: req.user._id });
+    // TODO: Throw error everywhere instead of res.send!
     if (!profile) {
       return res.send("PROFILE_NOT_FOUND");
     }
