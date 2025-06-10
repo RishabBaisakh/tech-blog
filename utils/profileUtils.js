@@ -8,7 +8,7 @@ const findProfileByUser = async (user) => {
     console.log(
       "profileUtils - findProfileByUser: Error while fetching the profile!"
     );
-    throw err;
+    throw new Error("PROFILE_NOT_FOUND");
   }
 };
 

@@ -1,0 +1,131 @@
+<!-- Edit Blog Button -->
+<button
+  class="btn btn-primary"
+  data-bs-toggle="modal"
+  data-bs-target="#editBlogModal"
+  aria-label="Edit blog post"
+>
+  <i class="bi bi-pencil-square" aria-hidden="true"></i>
+</button>
+
+<div
+  class="modal fade"
+  id="editBlogModal"
+  tabindex="-1"
+  aria-labelledby="editBlogModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form
+        action="/blogs/update"
+        method="POST"
+        enctype="multipart/form-data"
+        id="edit-blog-form"
+        class="blog-form"
+      >
+        <input type="hidden" name="blogId" value="<%= blog._id %>">
+
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="editBlogModalLabel">Edit Blog</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="title" class="form-label">Blog Title</label>
+            <input
+              type="text"
+              class="form-control"
+              id="title"
+              name="title"
+              value="<%= blog.title %>"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="body" class="form-label">Blog Body</label>
+            <textarea
+              class="form-control"
+              id="body"
+              name="body"
+              rows="6"
+              required
+            ><%= blog.body %></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="image" class="form-label">Image</label>
+            <input
+              type="file"
+              class="form-control"
+              id="image"
+              name="image"
+              accept="image/*"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label for="tags" class="form-label">Tags</label>
+            <select
+              class="form-select"
+              id="tags"
+              name="tags"
+              multiple
+              aria-label="Select up to five tags"
+            >
+              <% allTags.forEach(tag => { %>
+                <option
+                  value="<%= tag._id %>"
+                  <%= blog.tags.includes(tag._id) ? 'selected' : '' %>>
+                  <%= tag.label %>
+                </option>
+              <% }) %>
+            </select>
+            <div class="form-text">You can select up to 5 tags.</div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary w-100">Update Blog</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const editBlogModal = document.getElementById("editBlogModal");
+  let choicesInstance;
+
+  editBlogModal.addEventListener("show.bs.modal", () => {
+    const tagsSelect = editBlogModal.querySelector("#tags");
+
+    if (choicesInstance) {
+      choicesInstance.destroy();
+    }
+
+    choicesInstance = new Choices(tagsSelect, {
+      removeItemButton: true,
+      placeholderValue: "Select up to five tags",
+      searchPlaceholderValue: "Search tags",
+      closeDropdownOnSelect: false,
+      maxItemCount: 5,
+      maxItemText: (count) => `Maximum ${count} tags allowed.`,
+    });
+  });
+
+  editBlogModal.addEventListener("hidden.bs.modal", () => {
+    editBlogModal.querySelector("form").reset();
+    if (choicesInstance) {
+      choicesInstance.destroy();
+      choicesInstance = null;
+    }
+  });
+</script>

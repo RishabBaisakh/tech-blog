@@ -2,8 +2,8 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="container py-5">
-    <div class="d-flex justify-content-between mb-3">
+  <main class="container pb-5">
+    <nav aria-label="Breadcrumb" class="mb-3 d-flex justify-content-between">
       <a class="icon-link icon-link-hover" href="/blogs">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -19,36 +19,46 @@
             d="M15 8a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 7.5H14.5a.5.5 0 0 1 .5.5z"
           />
         </svg>
-        Back to Blogs
+        <span>Back to Blogs</span>
       </a>
-      <a href="#" class="btn btn-danger" data-doc="<%= blog._id %>">
-        <i class="bi bi-trash"></i> Delete Blog
-      </a>
-    </div>
-    <div class="card shadow-lg">
+      <div class="d-flex gap-2">
+        <button
+          class="btn btn-danger delete"
+          data-doc="<%= blog._id %>"
+          aria-label="Delete blog post"
+        >
+          <i class="bi bi-trash" aria-hidden="true"></i>
+        </button>
+
+        <%- include("./editModal", {blog}) %>
+      </div>
+    </nav>
+
+    <article class="card shadow-lg" aria-labelledby="blog-title">
       <% if (blog.image && blog.image.filename) { %>
       <img
         src="/uploads/<%= blog.image.filename %>"
         class="card-img-top"
         style="height: 300px"
-        alt="Blog Image"
+        alt="<%= blog.title %> featured image"
       />
       <% } %>
       <div class="card-body">
-        <h2 class="card-title mb-3"><%= blog.title %></h2>
+        <h2 id="blog-title" class="card-title mb-3"><%= blog.title %></h2>
         <p class="card-text fs-5"><%= blog.body %></p>
       </div>
-    </div>
+    </article>
+    <div id="delete-status" class="visually-hidden" aria-live="polite"></div>
   </main>
 
   <%- include('../partials/footer.ejs') %>
 
   <script>
-    const trashCan = document.querySelector("a.delete");
+    const trashButton = document.querySelector(".delete");
 
-    trashCan.addEventListener("click", (event) => {
+    trashButton?.addEventListener("click", (event) => {
       event.preventDefault();
-      const endpoint = `/blogs/${trashCan.dataset.doc}`;
+      const endpoint = `/blogs/${trashButton.dataset.doc}`;
 
       if (confirm("Are you sure you want to delete this blog?")) {
         fetch(endpoint, {
@@ -59,12 +69,18 @@
             if (data.redirect) {
               window.location.href = data.redirect;
             } else {
-              alert("Failed to delete blog.");
+              document.getElementById("delete-status").textContent =
+                "Failed to delete blog.";
             }
           })
-          .catch((err) =>
-            console.error(`Error deleting blog ${trashCan.dataset.doc}:`, err)
-          );
+          .catch((err) => {
+            console.error(
+              `Error deleting blog ${trashButton.dataset.doc}:`,
+              err
+            );
+            document.getElementById("delete-status").textContent =
+              "An error occurred while deleting.";
+          });
       }
     });
   </script>

@@ -1,5 +1,6 @@
 const Blog = require("../models/blog");
 const Profile = require("../models/profile");
+const Tag = require("../models/tag");
 const { findProfileByUser } = require("../utils/profileUtils");
 
 const blog_index = async (req, res) => {
@@ -38,17 +39,28 @@ const blog_index = async (req, res) => {
   }
 };
 
-const blog_detals = (req, res) => {
+const blog_detals = async (req, res) => {
   const id = req.params.id;
 
-  Blog.findById(id)
-    .then((blog) => {
-      if (!blog) {
-        res.render("blogs/notfound", { title: "Not Found" });
-      }
-      res.render("blogs/detail", { blog: blog, title: "Blog Details" });
-    })
-    .catch((err) => res.render("404", { title: "Blog Not Found" }));
+  try {
+    const allTags = await Tag.find();
+
+    const blog = await Blog.findById(id);
+
+    if (!blog) {
+      res.render("blogs/notfound", { title: "Not Found" });
+    }
+    res.render("blogs/detail", {
+      blog: blog,
+      title: "Blog Details",
+      allTags,
+    });
+  } catch (err) {
+    console.log(
+      "Blog Details: Error occurred while fetching tags!",
+      err.message
+    );
+  }
 };
 
 const blog_delete = (req, res) => {
@@ -66,15 +78,52 @@ const blog_create_post = async (req, res) => {
   // TODO: this is without form validation!
   try {
     const profile = await findProfileByUser(req.user);
-
     const blog = new Blog({ ...req.body, image: req.file, profile });
+    await blog.save();
+    res.redirect("/blogs");
+  } catch (err) {
+    console.log(
+      "Blog Create Post: Error occurred while creating blog!",
+      err.message
+    );
+  }
+};
 
-    blog
-      .save()
-      .then((result) => res.redirect("/blogs"))
-      .catch((err) => console.log(`Error occured while creating new blog!`));
-  } catch {
-    console.log("Blog Create Post: Error occurred while fetching profile!");
+const blog_update_post = async (req, res) => {
+  // TODO: this is without form validation!
+  const blogId = req.body.blogId;
+  try {
+    if (!blogId) {
+      return res.status(400).json({ error: "Blog ID is required." });
+    }
+
+    const profile = await findProfileByUser(req.user);
+
+    const updateData = {
+      title: req.body.title,
+      body: req.body.body,
+      tags: req.body.tags,
+      profile,
+    };
+
+    if (req.file) {
+      updateData.image = req.file;
+    }
+
+    const updatedBlog = await Blog.findByIdAndUpdate(blogId, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedBlog) {
+      throw new Error("BLOG_NOT_FOUND");
+    }
+
+    res.redirect(`/blogs/${blogId}`);
+  } catch (err) {
+    console.log(
+      "Blog Update Post: Error occurred while updating blog".err.message
+    );
   }
 };
 
@@ -82,32 +131,23 @@ const blog_like_post = async (req, res) => {
   const blogId = req.params.id;
 
   try {
-    // TODO: Abstract this repeating piece of logic
-    const profile = await Profile.findOne({ user: req.user._id });
-    // TODO: Throw error everywhere instead of res.send!
-    if (!profile) {
-      return res.send("PROFILE_NOT_FOUND");
-    }
+    const profile = await findProfileByUser(req.user);
 
     const blog = await Blog.findOne({ _id: blogId }).populate("likes");
+    if (!blog) throw new Error("BLOG_NOT_FOUND");
 
     const hasLiked = blog.likes.includes(profile._id);
-
     if (hasLiked) return res.send("ALREADY_LIKED");
 
-    if (!blog) {
-      return res.send("BLOG_NOT_FOUND");
-    }
     blog.likes.push(profile);
 
-    blog
-      .save()
-      .then((result) => res.json({ result }))
-      .catch((err) => {
-        console.log("Blog Like Post: Error occurred while saving like!");
-      });
+    await blog.save();
+    res.status(200).json({ result });
   } catch (err) {
-    console.log("Blog Like Post: Error occurred while fetch the blog/profile!");
+    console.log(
+      "Blog Like Post: Error occurred while fetch the blog/profile!",
+      err.message
+    );
   }
 };
 
@@ -153,4 +193,5 @@ module.exports = {
   blog_create_post,
   blog_like_post,
   blog_dislike_post,
+  blog_update_post,
 };
