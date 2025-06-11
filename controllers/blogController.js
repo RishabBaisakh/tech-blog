@@ -45,7 +45,7 @@ const blog_detals = async (req, res) => {
   try {
     const allTags = await Tag.find();
 
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id).populate("tags");
 
     if (!blog) {
       res.render("blogs/notfound", { title: "Not Found" });

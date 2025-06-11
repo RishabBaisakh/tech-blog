@@ -34,20 +34,67 @@
       </div>
     </nav>
 
-    <article class="card shadow-lg" aria-labelledby="blog-title">
-      <% if (blog.image && blog.image.filename) { %>
-      <img
-        src="/uploads/<%= blog.image.filename %>"
-        class="card-img-top"
-        style="height: 300px"
-        alt="<%= blog.title %> featured image"
-      />
-      <% } %>
-      <div class="card-body">
-        <h2 id="blog-title" class="card-title mb-3"><%= blog.title %></h2>
-        <p class="card-text fs-5"><%= blog.body %></p>
+    <div class="row">
+      <div class="col-lg-8">
+        <article class="card shadow-lg" aria-labelledby="blog-title">
+          <% if (blog.image && blog.image.filename) { %>
+          <img
+            src="/uploads/<%= blog.image.filename %>"
+            class="card-img-top"
+            style="height: 300px"
+            alt="<%= blog.title %> featured image"
+          />
+          <% } %>
+          <div class="card-body">
+            <h2 id="blog-title" class="card-title mb-3"><%= blog.title %></h2>
+            <p class="card-text fs-5"><%= blog.body %></p>
+          </div>
+        </article>
       </div>
-    </article>
+
+      <div class="col-lg-4 mt-4 mt-lg-0">
+        <aside class="card shadow-sm">
+          <div class="card-body text-center">
+            <% if (profile) { %>
+            <div class="mb-3">
+              <% if (profile.image) { %>
+              <img
+                src="/uploads/<%= profile.image.filename %>"
+                alt="Profile Image"
+                class="img-thumbnail rounded-circle mb-3 mx-auto shadow"
+                style="width: 70px; height: 70px; object-fit: cover"
+              />
+              <% } else { %>
+              <div
+                class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center"
+                style="width: 60px; height: 60px; font-size: 1.5rem"
+              >
+                <%= profile.firstName.charAt(0) %>
+              </div>
+              <% } %>
+              <h6 class="mt-2 mb-0">
+                <%= profile.firstName %> <%= profile.lastName %>
+              </h6>
+              <p class="text-muted small mb-0">Author</p>
+            </div>
+            <% } %>
+
+            <hr />
+
+            <h6>Tags</h6>
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+              <% if (blog.tags && blog.tags.length > 0) { %> <%
+              blog.tags.forEach(tag => { %>
+              <span class="badge bg-secondary"><%= tag.label %></span>
+              <% }) %> <% } else { %>
+              <span class="text-muted small">No tags added</span>
+              <% } %>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
     <div id="delete-status" class="visually-hidden" aria-live="polite"></div>
   </main>
 
