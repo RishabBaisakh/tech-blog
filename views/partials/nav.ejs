@@ -8,21 +8,48 @@
   <% if (user) { %>
   <div class="container d-flex flex-column">
     <div class="row justify-content-end">
-      <div class="dropdown w-auto">
-        <div
-          class="shadow-lg dropdown-toggle p-3 rounded-pill"
+      <div class="dropdown w-auto dropstart">
+        <button
+          class="nav-profile-dropdown shadow-lg dropdown-toggle rounded-circle text-white"
           type="button"
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
-          Welcome, <%= user.email %>
+          <%= user.email.charAt(0).toUpperCase() %>
+        </button>
+
+        <div
+          class="dropdown-menu shadow rounded-4 p-3 text-center"
+          style="min-width: 240px"
+        >
+          <div class="mb-2">
+            <div
+              class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center"
+              style="
+                width: 64px;
+                height: 64px;
+                font-size: 1.5rem;
+                font-weight: 500;
+              "
+            >
+              <%= user.email.charAt(0).toUpperCase() %>
+            </div>
+          </div>
+          <p class="mb-0 fw-semibold"><%= user.email %></p>
+          <p class="mb-2 text-muted small">
+            <% if (profile) { %> Hi, <%= profile.firstName %>! <% } else { %>
+            Welcome! <% } %>
+          </p>
+
+          <hr class="my-2" />
+
+          <a class="dropdown-item py-2" href="/profile">
+            <i class="bi bi-person me-2"></i> Profile
+          </a>
+          <a class="dropdown-item py-2 text-danger" href="/logout">
+            <i class="bi bi-box-arrow-right me-2"></i> Logout
+          </a>
         </div>
-        <ul class="dropdown-menu w-full">
-          <li><a href="/profile">Profile</a></li>
-          <li>
-            <a class="btn btn-danger" href="/logout">Logout</a>
-          </li>
-        </ul>
       </div>
     </div>
     <div class="row mt-auto">

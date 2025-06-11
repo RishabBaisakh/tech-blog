@@ -26,7 +26,6 @@ ul {
 }
 
 /* auth forms */
-
 .auth-form-width-custom {
   width: var(--auth-form-width);
   max-width: 100%;
@@ -77,6 +76,32 @@ nav a {
   color: #777;
   font-weight: 300;
 }
+nav .nav-profile-dropdown {
+  background-color: chocolate;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 50px;
+  font-size: 37px;
+  font-size: 1.7rem;
+  font-weight: 500;
+  border: none;
+}
+
+nav .nav-profile-dropdown::before {
+  display: none !important;
+}
+
+nav .dropdown-menu {
+  width: 350px;
+}
+
+.auth-links .btn {
+  white-space: nowrap;
+}
+
+/* Footer */
 footer {
   color: #777;
   text-align: center;

@@ -1,13 +1,13 @@
-console.log("A");
+function ensure(value) {
+  if (arguments.length === 0 || value !== "undefined") {
+    throw new Error("Please enter valid argument(s).");
+  } else {
+    console.log(arguments);
+  }
 
-console.log("B");
+  return value;
+}
 
-setTimeout(() => {
-  console.log("Timer");
-});
+let a;
 
-Promise.resolve().then(() => {
-  console.log("Promise");
-});
-
-console.log("F");
+ensure(a);

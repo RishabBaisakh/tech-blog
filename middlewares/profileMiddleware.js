@@ -2,6 +2,8 @@ const Profile = require("../models/profile");
 const { findProfileByUser } = require("../utils/profileUtils");
 
 const checkProfile = async (req, res, next) => {
+  res.locals.profile = null;
+
   if (req.originalUrl.includes("/profile/create")) return next();
 
   const user = req.user;
@@ -13,6 +15,7 @@ const checkProfile = async (req, res, next) => {
       if (!profile) {
         res.redirect("/profile/create");
       } else {
+        res.locals.profile = profile;
         return next();
       }
     } catch (err) {
