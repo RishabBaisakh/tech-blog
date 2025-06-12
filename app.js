@@ -6,13 +6,13 @@ const mongoose = require("mongoose");
 const blogRoutes = require("./routes/blogRoutes");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
-const dashboardRoutes = require("./routes/dashboardRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const tagRoutes = require("./routes/tagRoutes");
 const cookieParser = require("cookie-parser");
 const { requireAuth, checkUser } = require("./middlewares/authMiddleware");
 const { checkProfile } = require("./middlewares/profileMiddleware");
-const { authorizeAdmin } = require("./middlewares/authorizeAdminMiddleware");
+const { requireAdmin } = require("./middlewares/adminMiddleware");
 
 // express app
 const app = express();
@@ -51,13 +51,13 @@ app.use(checkUser);
 app.use(checkProfile);
 
 // routes
-// TODO: blogs should not be plural, think about it
+// TODO: Fix all the controller naming - camelCase
 app.use("/blogs", requireAuth, upload.single("image"), blogRoutes);
 app.use("/profile", requireAuth, upload.single("image"), profileRoutes);
 app.use("/comment", requireAuth, commentRoutes);
 app.use("/tags", requireAuth, tagRoutes);
 app.use("/", authRoutes);
-app.use("/dashboard", authorizeAdmin, dashboardRoutes);
+app.use("/admin", requireAdmin, adminRoutes);
 app.get("/", (req, res) => {
   res.render("home", { title: "Home" });
 });

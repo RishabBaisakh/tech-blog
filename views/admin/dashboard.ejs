@@ -4,6 +4,7 @@
 
   <main class="container py-5">
     <!-- Pending Blogs -->
+    <% if (pendingBlogs.length > 0) { %>
     <section class="mb-5 card shadow">
       <div class="card-body">
         <h4>
@@ -12,8 +13,10 @@
         <%- include("./partials/blogsTable.ejs", { blogs: pendingBlogs }) %>
       </div>
     </section>
+    <% } %>
 
     <!-- Approved Blogs -->
+    <% if (approvedBlogs.length > 0) { %>
     <section class="mb-5 card shadow">
       <div class="card-body">
         <h4>
@@ -24,6 +27,7 @@
     </section>
 
     <!-- Rejected Blogs -->
+    <% } %> <% if (rejectedBlogs.length > 0) { %>
     <section class="mb-5 card shadow">
       <div class="card-body">
         <h4>
@@ -32,6 +36,7 @@
         <%- include("./partials/blogsTable.ejs", { blogs: rejectedBlogs }) %>
       </div>
     </section>
+    <% } %>
 
     <!-- Admin Access -->
     <section class="mt-5">

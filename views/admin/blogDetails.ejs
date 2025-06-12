@@ -1,0 +1,156 @@
+<%- include("../partials/head.ejs") %>
+<body>
+  <%- include('../partials/nav.ejs') %>
+
+  <main class="container pb-5">
+    <nav aria-label="Breadcrumb" class="mb-3 d-flex justify-content-between">
+      <a class="icon-link icon-link-hover" href="/admin">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="bi"
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+          width="16"
+          height="16"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M15 8a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 7.5H14.5a.5.5 0 0 1 .5.5z"
+          />
+        </svg>
+        <span>Back to Blogs</span>
+      </a>
+      <% if (blog.approvalStatus === "pending") { %>
+      <div class="d-flex gap-2">
+        <button
+          class="btn btn-success"
+          id="approveBtn"
+          data-id="<%= blog._id %>"
+        >
+          Approve
+        </button>
+        <button class="btn btn-danger" id="rejectBtn" data-id="<%= blog._id %>">
+          Reject
+        </button>
+      </div>
+      <% } %>
+    </nav>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <article class="card shadow-lg" aria-labelledby="blog-title">
+          <% if (blog.image && blog.image.filename) { %>
+          <img
+            src="/uploads/<%= blog.image.filename %>"
+            class="card-img-top"
+            style="height: 300px"
+            alt="<%= blog.title %> featured image"
+          />
+          <% } %>
+          <div class="card-body">
+            <% if (blog.approvalStatus) { %>
+            <span
+              class="badge <% if (blog.approvalStatus === 'approved') { %> bg-success <% } else if (blog.approvalStatus === 'pending') { %> bg-warning text-dark <% } else if (blog.approvalStatus === 'rejected') { %> bg-danger <% } %> mb-2"
+            >
+              <%= blog.approvalStatus.charAt(0).toUpperCase() +
+              blog.approvalStatus.slice(1) %>
+            </span>
+            <% } %>
+            <h2 id="blog-title" class="card-title mb-3"><%= blog.title %></h2>
+            <p class="card-text fs-5"><%= blog.body %></p>
+          </div>
+        </article>
+      </div>
+
+      <div class="col-lg-4 mt-4 mt-lg-0">
+        <aside class="card shadow-sm">
+          <div class="card-body text-center">
+            <div class="mb-3">
+              <% if (blog.profile.image) { %>
+              <img
+                src="/uploads/<%= blog.profile.image.filename %>"
+                alt="Profile Image"
+                class="img-thumbnail rounded-circle mb-3 mx-auto shadow"
+                style="width: 70px; height: 70px; object-fit: cover"
+              />
+              <% } else { %>
+              <div
+                class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center"
+                style="width: 60px; height: 60px; font-size: 1.5rem"
+              >
+                <%= blog.profile.firstName.charAt(0) %>
+              </div>
+              <% } %>
+              <h6 class="mt-2 mb-0">
+                <%= blog.profile.firstName %> <%= blog.profile.lastName %>
+              </h6>
+              <p class="text-muted small mb-0">Author</p>
+            </div>
+
+            <hr />
+
+            <h6>Tags</h6>
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+              <% if (blog.tags && blog.tags.length > 0) { %> <%
+              blog.tags.forEach(tag => { %>
+              <span class="badge bg-secondary"><%= tag.label %></span>
+              <% }) %> <% } else { %>
+              <span class="text-muted small">No tags added</span>
+              <% } %>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div id="delete-status" class="visually-hidden" aria-live="polite"></div>
+  </main>
+
+  <%- include('../partials/footer.ejs') %>
+
+  <script>
+    const approveButton = document.getElementById("approveBtn");
+    const rejectButton = document.getElementById("rejectBtn");
+
+    approveButton?.addEventListener("click", async () => {
+      const blogId = approveButton.getAttribute("data-id");
+      if (confirm("Are you sure you want to approve this blog?")) {
+        try {
+          const result = await fetch(`/admin/blogs/${blogId}/approve`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (result.ok) {
+            location.reload();
+          }
+        } catch (err) {
+          console.log("Error occured while approve action");
+        }
+      }
+    });
+
+    rejectButton?.addEventListener("click", async () => {
+      const blogId = approveButton.getAttribute("data-id");
+      if (confirm("Are you sure you want to reject this blog?")) {
+        try {
+          const result = await fetch(`/admin/blogs/${blogId}/reject`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (result.ok) {
+            location.reload();
+          }
+        } catch (err) {
+          console.log("Error occured while approve action");
+        }
+      }
+    });
+  </script>
+</body>
