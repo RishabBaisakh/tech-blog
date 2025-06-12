@@ -3,12 +3,12 @@ const blogController = require("../controllers/blogController");
 
 const router = Router();
 
-router.get("/", blogController.blog_index);
-router.post("/create", blogController.blog_create_post);
-router.post("/update", blogController.blog_update_post);
-router.get("/:id", blogController.blog_detals);
-router.delete("/:id", blogController.blog_delete);
-router.post("/:id/like", blogController.blog_like_post);
-router.post("/:id/dislike", blogController.blog_dislike_post);
+router.get("/", blogController.viewAll);
+router.post("/create", blogController.create);
+router.put("/update", blogController.update);
+router.get("/:id", blogController.viewDetails);
+router.delete("/:id", blogController.deleteBlog);
+router.post("/:id/like", blogController.like);
+router.post("/:id/dislike", blogController.dislike);
 
 module.exports = router;

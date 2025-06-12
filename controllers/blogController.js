@@ -5,7 +5,7 @@ const { findProfileByUser } = require("../utils/profileUtils");
 const sanitizeHtml = require("sanitize-html");
 const { sanitizeInput } = require("../utils/sanitizeUtils");
 
-const blog_index = async (req, res) => {
+const viewAll = async (req, res) => {
   try {
     let blogs = [];
     const profile = await findProfileByUser(req.user);
@@ -41,7 +41,7 @@ const blog_index = async (req, res) => {
   }
 };
 
-const blog_detals = async (req, res) => {
+const viewDetails = async (req, res) => {
   const id = req.params.id;
 
   try {
@@ -65,7 +65,7 @@ const blog_detals = async (req, res) => {
   }
 };
 
-const blog_delete = async (req, res) => {
+const deleteBlog = async (req, res) => {
   const id = req.params.id;
 
   try {
@@ -93,7 +93,7 @@ const blog_delete = async (req, res) => {
   }
 };
 
-const blog_create_post = async (req, res) => {
+const create = async (req, res) => {
   const { Filter } = await import("bad-words");
   const filter = new Filter();
   try {
@@ -134,7 +134,7 @@ const blog_create_post = async (req, res) => {
   }
 };
 
-const blog_update_post = async (req, res) => {
+const update = async (req, res) => {
   const { Filter } = await import("bad-words");
   const filter = new Filter();
 
@@ -183,7 +183,7 @@ const blog_update_post = async (req, res) => {
   }
 };
 
-const blog_like_post = async (req, res) => {
+const like = async (req, res) => {
   const blogId = req.params.id;
 
   try {
@@ -207,7 +207,7 @@ const blog_like_post = async (req, res) => {
   }
 };
 
-const blog_dislike_post = async (req, res) => {
+const dislike = async (req, res) => {
   const blogId = req.params.id;
 
   try {
@@ -243,11 +243,11 @@ const blog_dislike_post = async (req, res) => {
 };
 
 module.exports = {
-  blog_index,
-  blog_detals,
-  blog_delete,
-  blog_create_post,
-  blog_like_post,
-  blog_dislike_post,
-  blog_update_post,
+  viewAll,
+  viewDetails,
+  deleteBlog,
+  create,
+  like,
+  dislike,
+  update,
 };
