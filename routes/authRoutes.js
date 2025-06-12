@@ -3,10 +3,10 @@ const authController = require("../controllers/authController");
 
 const router = Router();
 
-router.get("/signup", authController.signup_get);
-router.post("/signup", authController.signup_post);
-router.get("/login", authController.login_get);
-router.post("/login", authController.login_post);
-router.get("/logout", authController.logout_get);
+router.get("/signup", authController.renderSignup);
+router.post("/signup", authController.handleSignup);
+router.get("/login", authController.renderLogin);
+router.post("/login", authController.handleLogin);
+router.get("/logout", authController.performLogout);
 
 module.exports = router;

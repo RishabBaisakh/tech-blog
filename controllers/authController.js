@@ -42,11 +42,11 @@ const createToken = (id) => {
   });
 };
 
-module.exports.signup_get = (req, res) => {
+const renderSignup = (req, res) => {
   return res.render("auth/signup", { title: "Sign Up", path: req.path });
 };
 
-module.exports.signup_post = async (req, res) => {
+const handleSignup = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -61,11 +61,11 @@ module.exports.signup_post = async (req, res) => {
   }
 };
 
-module.exports.login_get = async (req, res) => {
+const renderLogin = async (req, res) => {
   return res.render("auth/login", { title: "Login", path: req.path });
 };
 
-module.exports.login_post = async (req, res) => {
+const handleLogin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -83,7 +83,15 @@ module.exports.login_post = async (req, res) => {
   }
 };
 
-module.exports.logout_get = (req, res) => {
+const performLogout = (req, res) => {
   res.cookie("jwt", "", { maxAge: 1 });
   return res.redirect("/login");
+};
+
+module.exports = {
+  renderSignup,
+  handleSignup,
+  renderLogin,
+  handleLogin,
+  performLogout,
 };
