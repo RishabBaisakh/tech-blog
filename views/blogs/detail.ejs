@@ -21,6 +21,7 @@
         </svg>
         <span>Back to Blogs</span>
       </a>
+      <% if (blog.profile.user.equals(user._id)) { %>
       <div class="d-flex gap-2">
         <button
           class="btn btn-danger delete"
@@ -32,6 +33,7 @@
 
         <%- include("./editModal", {blog}) %>
       </div>
+      <% } %>
     </nav>
 
     <div class="row">

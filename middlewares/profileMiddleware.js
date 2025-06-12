@@ -16,6 +16,7 @@ const checkProfile = async (req, res, next) => {
         res.redirect("/profile/create");
       } else {
         res.locals.profile = profile;
+
         return next();
       }
     } catch (err) {

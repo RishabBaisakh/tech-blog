@@ -66,17 +66,30 @@ const blog_detals = async (req, res) => {
 };
 
 const blog_delete = async (req, res) => {
-  // TODO: only the blog author can delete it
   const id = req.params.id;
 
   try {
-    await Blog.findByIdAndDelete(id);
+    const blog = await Blog.findById(id).populate("profile");
+
+    if (!blog) {
+      return res.status(404).json({ error: "Blog not found" });
+    }
+
+    if (!blog.profile.user.equals(req.user._id)) {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized to delete this blog" });
+    }
+
+    await blog.remove();
+
     return res.json({ redirect: "/blogs" });
   } catch (err) {
-    console.log(
+    console.error(
       "Blog Delete: Error occurred while deleting the blog",
       err.message
     );
+    return res.status(500).json({ error: "Server error" });
   }
 };
 
