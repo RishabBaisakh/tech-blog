@@ -55,11 +55,10 @@
       <div class="col-lg-4 mt-4 mt-lg-0">
         <aside class="card shadow-sm">
           <div class="card-body text-center">
-            <% if (profile) { %>
             <div class="mb-3">
-              <% if (profile.image) { %>
+              <% if (blog.profile.image) { %>
               <img
-                src="/uploads/<%= profile.image.filename %>"
+                src="/uploads/<%= blog.profile.image.filename %>"
                 alt="Profile Image"
                 class="img-thumbnail rounded-circle mb-3 mx-auto shadow"
                 style="width: 70px; height: 70px; object-fit: cover"
@@ -69,15 +68,14 @@
                 class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center"
                 style="width: 60px; height: 60px; font-size: 1.5rem"
               >
-                <%= profile.firstName.charAt(0) %>
+                <%= blog.profile.firstName.charAt(0) %>
               </div>
               <% } %>
               <h6 class="mt-2 mb-0">
-                <%= profile.firstName %> <%= profile.lastName %>
+                <%= blog.profile.firstName %> <%= blog.profile.lastName %>
               </h6>
               <p class="text-muted small mb-0">Author</p>
             </div>
-            <% } %>
 
             <hr />
 

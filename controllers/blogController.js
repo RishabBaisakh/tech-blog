@@ -2,6 +2,8 @@ const Blog = require("../models/blog");
 const Profile = require("../models/profile");
 const Tag = require("../models/tag");
 const { findProfileByUser } = require("../utils/profileUtils");
+const sanitizeHtml = require("sanitize-html");
+const { sanitizeInput } = require("../utils/sanitizeUtils");
 
 const blog_index = async (req, res) => {
   try {
@@ -45,7 +47,7 @@ const blog_detals = async (req, res) => {
   try {
     const allTags = await Tag.find();
 
-    const blog = await Blog.findById(id).populate("tags");
+    const blog = await Blog.findById(id).populate("tags").populate("profile");
 
     if (!blog) {
       res.render("blogs/notfound", { title: "Not Found" });
@@ -63,67 +65,108 @@ const blog_detals = async (req, res) => {
   }
 };
 
-const blog_delete = (req, res) => {
+const blog_delete = async (req, res) => {
+  // TODO: only the blog author can delete it
   const id = req.params.id;
 
-  // TODO: implement try/catch everywhere!
-  Blog.findByIdAndDelete(id)
-    .then((result) => res.json({ redirect: "/blogs" }))
-    .catch((err) =>
-      console.log(`Error occurred while deleting the blog on the server`)
-    );
-};
-
-const blog_create_post = async (req, res) => {
-  // TODO: this is without form validation!
   try {
-    const profile = await findProfileByUser(req.user);
-    const blog = new Blog({ ...req.body, image: req.file, profile });
-    await blog.save();
-    res.redirect("/blogs");
+    await Blog.findByIdAndDelete(id);
+    return res.json({ redirect: "/blogs" });
   } catch (err) {
     console.log(
-      "Blog Create Post: Error occurred while creating blog!",
+      "Blog Delete: Error occurred while deleting the blog",
       err.message
     );
   }
 };
 
-const blog_update_post = async (req, res) => {
-  // TODO: this is without form validation!
-  const blogId = req.body.blogId;
+const blog_create_post = async (req, res) => {
+  const { Filter } = await import("bad-words");
+  const filter = new Filter();
   try {
-    if (!blogId) {
-      return res.status(400).json({ error: "Blog ID is required." });
+    // Profanity/Spam Detection
+    // TODO: Client Side Pending
+    if (filter.isProfane(req.body.body)) {
+      return res
+        .status(400)
+        .json({ error: "Body contains inappropriate language." });
+    }
+
+    if (filter.isProfane(req.body.title)) {
+      return res
+        .status(400)
+        .json({ error: "Title contains inappropriate language." });
     }
 
     const profile = await findProfileByUser(req.user);
 
-    const updateData = {
-      title: req.body.title,
-      body: req.body.body,
-      tags: req.body.tags,
+    const blog = new Blog({
+      ...req.body,
+      image: req.file,
       profile,
-    };
-
-    if (req.file) {
-      updateData.image = req.file;
-    }
-
-    const updatedBlog = await Blog.findByIdAndUpdate(blogId, updateData, {
-      new: true,
-      runValidators: true,
+      body: sanitizeInput(req.body.body),
+      title: sanitizeInput(req.body.title),
     });
 
-    if (!updatedBlog) {
-      throw new Error("BLOG_NOT_FOUND");
+    await blog.validate();
+    await blog.save();
+    res.redirect("/blogs");
+  } catch (err) {
+    //  TODO: Do not remove the catch console.logs unless we have a global handler
+    console.log(
+      "Blog Create Post: Error occurred while creating blog!",
+      err.message
+    );
+    return res.status(400).json({ errorMessage: err.message });
+  }
+};
+
+const blog_update_post = async (req, res) => {
+  const { Filter } = await import("bad-words");
+  const filter = new Filter();
+
+  const blogId = req.body.blogId;
+
+  try {
+    if (!blogId) {
+      return res.status(400).json({ error: "Blog ID is required." });
+    }
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return res.status(404).json({ error: "Blog not found." });
     }
 
-    res.redirect(`/blogs/${blogId}`);
+    // Profanity/Spam detection
+    // TODO: Client Side Pending
+    if (filter.isProfane(req.body.body)) {
+      return res
+        .status(400)
+        .json({ error: "Body contains inappropriate language." });
+    }
+
+    if (filter.isProfane(req.body.title)) {
+      return res
+        .status(400)
+        .json({ error: "Title contains inappropriate language." });
+    }
+
+    blog.title = sanitizeHtml(req.body.title);
+    blog.body = sanitizeHtml(req.body.body);
+    blog.tags = req.body.tags;
+
+    if (req.file) {
+      blog.image = req.file;
+    }
+    await blog.validate();
+    await blog.save();
+
+    return res.redirect(`/blogs/${blogId}`);
   } catch (err) {
     console.log(
-      "Blog Update Post: Error occurred while updating blog".err.message
+      "Blog Update Post: Error occurred while updating blog",
+      err.message
     );
+    return res.send(400).json({ errorMessage: err.message });
   }
 };
 

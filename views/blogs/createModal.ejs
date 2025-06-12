@@ -42,8 +42,13 @@
               class="form-control"
               id="title"
               name="title"
+              maxlength="70"
               required
             />
+            <span
+              class="form-text text-end d-block small text-muted"
+              id="titleCharCount"
+            ></span>
           </div>
 
           <div class="mb-3">
@@ -54,7 +59,12 @@
               name="body"
               rows="6"
               required
+              maxlength="5000"
             ></textarea>
+            <span
+              class="form-text text-end d-block small text-muted"
+              id="bodyCharCount"
+            ></span>
           </div>
 
           <div class="mb-3">
@@ -125,5 +135,20 @@
 
   createBlogModal.addEventListener("hidden.bs.modal", () => {
     createBlogModal.querySelector("form").reset();
+    // Reset character counters
+    document.getElementById("titleCharCount").textContent = "";
+    document.getElementById("bodyCharCount").textContent = "";
+  });
+
+  const bodyField = document.getElementById("body");
+  bodyField.addEventListener("input", () => {
+    const length = bodyField.value.length;
+    document.getElementById("bodyCharCount").textContent = `${length}/5000`;
+  });
+
+  const titleField = document.getElementById("title");
+  titleField.addEventListener("input", () => {
+    const length = titleField.value.length;
+    document.getElementById("titleCharCount").textContent = `${length}/70`;
   });
 </script>
