@@ -4,7 +4,6 @@ const path = require("path");
 const upload = require("./middlewares/uploadImageMiddleware");
 const mongoose = require("mongoose");
 const blogRoutes = require("./routes/blogRoutes");
-const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const tagRoutes = require("./routes/tagRoutes");
@@ -55,7 +54,6 @@ app.use("/blogs", requireAuth, upload.single("image"), blogRoutes);
 app.use("/profile", requireAuth, upload.single("image"), profileRoutes);
 app.use("/comment", requireAuth, commentRoutes);
 app.use("/tags", requireAuth, tagRoutes);
-app.use("/", authRoutes);
 app.get("/", (req, res) => {
   res.render("home", { title: "Home" });
 });

@@ -69,7 +69,7 @@
     if (hasError) return;
 
     try {
-      const result = await fetch("/signup", {
+      const result = await fetch("/api/signup", {
         method: "POST",
         body: JSON.stringify({ email, password }),
         headers: {
@@ -92,6 +92,7 @@
         return;
       }
 
+      // TODO: Sign up is actually login + no next url!
       if (data.user && data.nextUrl) {
         location.assign(data.nextUrl);
       }

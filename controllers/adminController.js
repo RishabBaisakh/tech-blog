@@ -1,6 +1,6 @@
 const Blog = require("../models/blog");
 
-const dashboard = async (req, res) => {
+const renderDashboard = async (req, res) => {
   try {
     const blogs = await Blog.find().populate({
       path: "profile",
@@ -29,7 +29,7 @@ const dashboard = async (req, res) => {
   }
 };
 
-const viewBlog = async (req, res) => {
+const renderBlogDetails = async (req, res) => {
   const blogId = req.params.id;
 
   try {
@@ -86,8 +86,8 @@ const rejectBlog = async (req, res) => {
 };
 
 module.exports = {
-  dashboard,
-  viewBlog,
+  renderDashboard,
+  renderBlogDetails,
   approveBlog,
   rejectBlog,
 };

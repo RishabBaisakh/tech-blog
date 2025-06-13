@@ -3,7 +3,7 @@ const adminController = require("../../controllers/adminController");
 
 const router = Router();
 
-router.get("/dashboard", adminController.dashboard);
-router.get("/blogs/:id", adminController.viewBlog);
+router.get("/dashboard", adminController.renderDashboard);
+router.get("/blogs/:id", adminController.renderBlogDetails);
 
 module.exports = router;

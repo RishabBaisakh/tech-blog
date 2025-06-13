@@ -71,7 +71,7 @@
     if (hasError) return;
 
     try {
-      const result = await fetch("/login", {
+      const result = await fetch("/api/login", {
         method: "POST",
         body: JSON.stringify({ email, password }),
         headers: {
