@@ -96,7 +96,7 @@
   const getTags = async () => {
     try {
       // fetch tags!
-      const res = await fetch("/tags");
+      const res = await fetch("/api/tags");
       if (!res.ok) throw new Error("Failed to fetch tags.");
 
       return (await res.json())?.tags ?? [];
