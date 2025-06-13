@@ -75,7 +75,7 @@ const handleLogin = async (req, res) => {
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
     return res.status(200).json({
       user: user._id,
-      nextUrl: user.role === "admin" ? "/dashboard" : "/blogs",
+      nextUrl: user.role === "admin" ? "/admin/dashboard" : "/blogs",
     });
   } catch (err) {
     const errors = handleErrors(err);

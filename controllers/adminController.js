@@ -59,7 +59,10 @@ const approveBlog = async (req, res) => {
     await blog.save();
     return res.status(200).json({ blog });
   } catch (err) {
-    console.log("approveBlog: Error occurred while approving the blog");
+    console.log(
+      "approveBlog: Error occurred while approving the blog",
+      err.message
+    );
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };

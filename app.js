@@ -6,13 +6,12 @@ const mongoose = require("mongoose");
 const blogRoutes = require("./routes/blogRoutes");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
-const adminRoutes = require("./routes/adminRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const tagRoutes = require("./routes/tagRoutes");
 const cookieParser = require("cookie-parser");
 const { requireAuth, checkUser } = require("./middlewares/authMiddleware");
 const { checkProfile } = require("./middlewares/profileMiddleware");
-const { requireAdmin } = require("./middlewares/adminMiddleware");
+const routes = require("./routes");
 
 // express app
 const app = express();
@@ -51,13 +50,12 @@ app.use(checkUser);
 app.use(checkProfile);
 
 // routes
-// TODO: Fix all the controller naming - camelCase
+app.use(routes);
 app.use("/blogs", requireAuth, upload.single("image"), blogRoutes);
 app.use("/profile", requireAuth, upload.single("image"), profileRoutes);
 app.use("/comment", requireAuth, commentRoutes);
 app.use("/tags", requireAuth, tagRoutes);
 app.use("/", authRoutes);
-app.use("/admin", requireAdmin, adminRoutes);
 app.get("/", (req, res) => {
   res.render("home", { title: "Home" });
 });

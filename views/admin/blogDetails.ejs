@@ -4,7 +4,7 @@
 
   <main class="container pb-5">
     <nav aria-label="Breadcrumb" class="mb-3 d-flex justify-content-between">
-      <a class="icon-link icon-link-hover" href="/admin">
+      <a class="icon-link icon-link-hover" href="/admin/dashboard">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="bi"
@@ -117,7 +117,7 @@
       const blogId = approveButton.getAttribute("data-id");
       if (confirm("Are you sure you want to approve this blog?")) {
         try {
-          const result = await fetch(`/admin/blogs/${blogId}/approve`, {
+          const result = await fetch(`/api/admin/blogs/${blogId}/approve`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -137,7 +137,7 @@
       const blogId = approveButton.getAttribute("data-id");
       if (confirm("Are you sure you want to reject this blog?")) {
         try {
-          const result = await fetch(`/admin/blogs/${blogId}/reject`, {
+          const result = await fetch(`/api/admin/blogs/${blogId}/reject`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
