@@ -3,10 +3,9 @@ const profileController = require("../controllers/profileController");
 
 const router = Router();
 
-router.get("/", profileController.profile_get);
-router.get("/create", profileController.profile_create_get);
-router.post("/create", profileController.profile_create_post);
-router.get("/edit", profileController.profile_edit_get);
-router.post("/update", profileController.profile_update_post);
-
+router.get("/", profileController.viewDetails);
+router.get("/create", profileController.viewCreate);
+router.post("/create", profileController.create);
+router.get("/edit", profileController.viewEdit);
+router.post("/update", profileController.update);
 module.exports = router;

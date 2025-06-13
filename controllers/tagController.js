@@ -1,6 +1,6 @@
 const Tag = require("../models/tag");
 
-const get_all_tags = async (req, res) => {
+const getAll = async (req, res) => {
   try {
     const tags = await Tag.find();
     return res.status(200).json({ tags });
@@ -13,5 +13,5 @@ const get_all_tags = async (req, res) => {
 };
 
 module.exports = {
-  get_all_tags,
+  getAll,
 };

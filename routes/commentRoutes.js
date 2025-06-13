@@ -3,6 +3,6 @@ const commentController = require("../controllers/commentController");
 
 const router = Router();
 
-router.post("/", commentController.comment_post);
+router.post("/", commentController.post);
 
 module.exports = router;

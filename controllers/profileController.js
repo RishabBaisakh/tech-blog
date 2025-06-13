@@ -1,7 +1,7 @@
 const Profile = require("../models/profile");
 const { findProfileByUser } = require("../utils/profileUtils");
 
-module.exports.profile_get = async (req, res) => {
+const viewDetails = async (req, res) => {
   try {
     const profile = await findProfileByUser(req.user);
 
@@ -15,7 +15,7 @@ module.exports.profile_get = async (req, res) => {
   }
 };
 
-module.exports.profile_create_get = async (req, res) => {
+const viewCreate = async (req, res) => {
   try {
     const profile = await findProfileByUser(req.user);
 
@@ -29,7 +29,7 @@ module.exports.profile_create_get = async (req, res) => {
   }
 };
 
-module.exports.profile_create_post = async (req, res) => {
+const create = async (req, res) => {
   try {
     const existingProfile = await findProfileByUser(req.user);
 
@@ -58,7 +58,7 @@ module.exports.profile_create_post = async (req, res) => {
   }
 };
 
-module.exports.profile_edit_get = async (req, res) => {
+const viewEdit = async (req, res) => {
   try {
     const profile = await findProfileByUser(req.user);
 
@@ -75,7 +75,7 @@ module.exports.profile_edit_get = async (req, res) => {
   }
 };
 
-module.exports.profile_update_post = async (req, res) => {
+const update = async (req, res) => {
   try {
     const profile = await findProfileByUser(req.user);
 
@@ -101,4 +101,12 @@ module.exports.profile_update_post = async (req, res) => {
       "Profile Update Post: Error occurred while fetching the profile!"
     );
   }
+};
+
+module.exports = {
+  viewDetails,
+  viewCreate,
+  create,
+  viewEdit,
+  update,
 };

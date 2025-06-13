@@ -2,7 +2,7 @@ const Comment = require("../models/comment");
 const Profile = require("../models/profile");
 const Blog = require("../models/blog");
 
-module.exports.comment_post = async (req, res) => {
+const post = async (req, res) => {
   const user = req.user;
   const blogId = req.body.blogId;
 
@@ -30,4 +30,8 @@ module.exports.comment_post = async (req, res) => {
       err
     );
   }
+};
+
+module.exports = {
+  post,
 };
