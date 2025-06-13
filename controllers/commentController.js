@@ -1,8 +1,8 @@
 const Comment = require("../models/comment");
-const Profile = require("../models/profile");
 const Blog = require("../models/blog");
+const { findProfileByUser } = require("../utils/profileUtils");
 
-const post = async (req, res) => {
+const handleCreate = async (req, res) => {
   const user = req.user;
   const blogId = req.body.blogId;
 
@@ -33,5 +33,5 @@ const post = async (req, res) => {
 };
 
 module.exports = {
-  post,
+  handleCreate,
 };
