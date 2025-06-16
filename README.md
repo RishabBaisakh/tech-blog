@@ -2,6 +2,8 @@
 
 A modern, full-stack blogging platform built with **Node.js**, designed for developers and tech enthusiasts to share knowledge, publish posts, and engage with others.
 
+https://tech-blog-z2n1.onrender.com
+
 ## 🚀 Features
 
 - Create, edit, and delete blog posts
