@@ -16,7 +16,7 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 // database connection
-const mongoUri = MONGO_URI;
+const mongoUri = process.env.MONGO_URI;
 mongoose
   .connect(mongoUri, { serverSelectionTimeoutMS: 20000 })
   .then((result) => {
