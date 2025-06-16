@@ -89,7 +89,7 @@
     likeButtons.forEach((button) => {
       const blogId = button.getAttribute("data-id");
       button.addEventListener("click", async (e) => {
-        const result = await fetch(`/blogs/${blogId}/like`, {
+        const result = await fetch(`/api/blogs/${blogId}/like`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -102,7 +102,7 @@
       const blogId = button.getAttribute("data-id");
 
       button.addEventListener("click", async (e) => {
-        const result = await fetch(`/blogs/${blogId}/dislike`, {
+        const result = await fetch(`/api/blogs/${blogId}/dislike`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

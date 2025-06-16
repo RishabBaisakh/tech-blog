@@ -2,10 +2,9 @@
 const mongoose = require("mongoose");
 const Blog = require("../models/blog");
 
-const dbUri =
-  "mongodb+srv://rishabbaisakh:FFBvtUWlYBGe40Ez@node-course.vwki4x3.mongodb.net/test-db?retryWrites=true&w=majority&appName=node-course";
+const mongoUri = process.env.MONGO_URI;
 mongoose
-  .connect(dbUri, { serverSelectionTimeoutMS: 20000 })
+  .connect(mongoUri, { serverSelectionTimeoutMS: 20000 })
   .then(async () => {
     // Migrate the Field
     const result = await Blog.updateMany(

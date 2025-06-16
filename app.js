@@ -48,7 +48,6 @@ app.use(checkProfile);
 
 // routes
 app.use(routes);
-app.use("/blogs", requireAuth, upload.single("image"), blogRoutes);
 
 // home
 app.get("/", (req, res) => {

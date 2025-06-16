@@ -89,7 +89,7 @@ const deleteBlog = async (req, res) => {
       "Blog Delete: Error occurred while deleting the blog",
       err.message
     );
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Internal Server error" });
   }
 };
 
@@ -197,8 +197,8 @@ const like = async (req, res) => {
 
     blog.likes.push(profile);
 
-    await blog.save();
-    res.status(200).json({ result });
+    const result = await blog.save();
+    res.status(200).json({ message: "Successfully dislike the blog.", result });
   } catch (err) {
     console.log(
       "Blog Like Post: Error occurred while fetch the blog/profile!",
