@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
@@ -9,15 +10,15 @@ const cookieParser = require("cookie-parser");
 const { requireAuth, checkUser } = require("./middlewares/authMiddleware");
 const { checkProfile } = require("./middlewares/profileMiddleware");
 const routes = require("./routes");
+const port = process.env.PORT || 3000;
 
 // express app
 const app = express();
 
 // database connection
-const dbUri =
-  "mongodb+srv://rishabbaisakh:FFBvtUWlYBGe40Ez@node-course.vwki4x3.mongodb.net/test-db?retryWrites=true&w=majority&appName=node-course";
+const mongoUri = MONGO_URI;
 mongoose
-  .connect(dbUri, { serverSelectionTimeoutMS: 20000 })
+  .connect(mongoUri, { serverSelectionTimeoutMS: 20000 })
   .then((result) => {
     console.log("Connected to the DB");
   })
@@ -26,7 +27,7 @@ mongoose
     // process.exit(1);
   });
 // TODO: move it inside the mongoose connection completion!
-app.listen(3000);
+app.listen(port);
 
 // register view engine
 app.set("view engine", "ejs");
