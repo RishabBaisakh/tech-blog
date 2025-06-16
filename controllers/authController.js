@@ -1,30 +1,25 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 
-// handle errors
-const handleErrors = (err) => {
+const mapUserError = (err) => {
   let errors = {
     email: "",
     password: "",
   };
 
-  // incorrect email
   if (err.message.includes("Incorrect email")) {
     errors.email = "The email is not registered";
   }
 
-  // incorrect password
   if (err.message.includes("Incorrect password")) {
     errors.password = "The password is incorrect";
   }
 
-  // duplicode error code
   if (err.code === 11000) {
     errors.email = "The email is already registered";
     return errors;
   }
 
-  // validation errors
   if (err.message.includes("User validation failed")) {
     Object.values(err.errors).forEach(({ properties }) => {
       errors[properties.path] = properties.message;
@@ -46,7 +41,7 @@ const renderSignup = (req, res) => {
   return res.render("auth/signup", { title: "Sign Up", path: req.path });
 };
 
-const handleSignup = async (req, res) => {
+const handleSignup = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
@@ -56,16 +51,17 @@ const handleSignup = async (req, res) => {
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
     return res.status(201).json({ user: user._id });
   } catch (err) {
-    const errors = handleErrors(err);
-    return res.status(400).send({ errors });
+    err.mappedErrors = mapUserError(err);
+    err.status = 400;
+    next(err);
   }
 };
 
-const renderLogin = async (req, res) => {
+const renderLogin = async (req, res, next) => {
   return res.render("auth/login", { title: "Login", path: req.path });
 };
 
-const handleLogin = async (req, res) => {
+const handleLogin = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
@@ -78,8 +74,9 @@ const handleLogin = async (req, res) => {
       nextUrl: user.role === "admin" ? "/admin/dashboard" : "/blogs",
     });
   } catch (err) {
-    const errors = handleErrors(err);
-    return res.status(400).json({ errors });
+    err.mappedErrors = mapUserError(err);
+    err.status = 400;
+    next(err);
   }
 };
 

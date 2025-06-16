@@ -1,6 +1,6 @@
 const Blog = require("../models/blog");
 
-const renderDashboard = async (req, res) => {
+const renderDashboard = async (req, res, next) => {
   try {
     const blogs = await Blog.find().populate({
       path: "profile",
@@ -25,11 +25,13 @@ const renderDashboard = async (req, res) => {
       rejectedBlogs,
     });
   } catch (err) {
-    console.log("Dashboard: Error occurred while fetching blogs", err.message);
+    err.message = `Dashboard Fetch Error: ${err.message}`;
+    err.status = 500;
+    next(err);
   }
 };
 
-const renderBlogDetails = async (req, res) => {
+const renderBlogDetails = async (req, res, next) => {
   const blogId = req.params.id;
 
   try {
@@ -42,11 +44,13 @@ const renderBlogDetails = async (req, res) => {
 
     res.render("admin/blogDetails", { title: "Admin | Blog Details", blog });
   } catch (err) {
-    console.log("viewBlog: Error occurred while fetching the blog");
+    err.message = `Blog Details Fetch Error: ${err.message}`;
+    err.status = 500;
+    next(err);
   }
 };
 
-const approveBlog = async (req, res) => {
+const approveBlog = async (req, res, next) => {
   const blogId = req.params.id;
   try {
     const blog = await Blog.findById(blogId);
@@ -59,15 +63,11 @@ const approveBlog = async (req, res) => {
     await blog.save();
     return res.status(200).json({ blog });
   } catch (err) {
-    console.log(
-      "approveBlog: Error occurred while approving the blog",
-      err.message
-    );
-    return res.status(500).json({ error: "Internal Server Error" });
+    next(err);
   }
 };
 
-const rejectBlog = async (req, res) => {
+const rejectBlog = async (req, res, next) => {
   const blogId = req.params.id;
   try {
     const blog = await Blog.findById(blogId);
@@ -80,8 +80,7 @@ const rejectBlog = async (req, res) => {
     await blog.save();
     return res.status(200).json({ blog });
   } catch (err) {
-    console.log("approveBlog: Error occurred while rejecting the blog");
-    return res.status(500).json({ error: "Internal Server Error" });
+    next(err);
   }
 };
 

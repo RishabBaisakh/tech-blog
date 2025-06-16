@@ -10,7 +10,7 @@ const checkProfile = async (req, res, next) => {
 
   if (user) {
     try {
-      const profile = await findProfileByUser(user);
+      const profile = await findProfileByUser(user, next);
 
       if (!profile) {
         res.redirect("/profile/create");

@@ -1,14 +1,12 @@
 const Blog = require("../models/blog");
-const Profile = require("../models/profile");
 const Tag = require("../models/tag");
 const { findProfileByUser } = require("../utils/profileUtils");
-const sanitizeHtml = require("sanitize-html");
 const { sanitizeInput } = require("../utils/sanitizeUtils");
 
-const viewAll = async (req, res) => {
+const viewAll = async (req, res, next) => {
   try {
     let blogs = [];
-    const profile = await findProfileByUser(req.user);
+    const profile = await findProfileByUser(req.user, next);
 
     if (req?.user?.role === "user") {
       blogs = await Blog.find({
@@ -36,12 +34,11 @@ const viewAll = async (req, res) => {
       currentProfileId: profile._id.toString() || null,
     });
   } catch (err) {
-    console.log("Blog Index: Error occurred while fetching blogs!", err);
-    res.status(500).send("Server Error");
+    next(err);
   }
 };
 
-const viewDetails = async (req, res) => {
+const viewDetails = async (req, res, next) => {
   const id = req.params.id;
 
   try {
@@ -50,55 +47,48 @@ const viewDetails = async (req, res) => {
     const blog = await Blog.findById(id).populate("tags").populate("profile");
 
     if (!blog) {
-      res.render("blogs/notfound", { title: "Not Found" });
+      throw Object.assign(new Error("Blog not found"), { status: 404 });
     }
+
     res.render("blogs/detail", {
       blog: blog,
       title: "Blog Details",
       allTags,
     });
   } catch (err) {
-    console.log(
-      "Blog Details: Error occurred while fetching tags!",
-      err.message
-    );
+    next(err);
   }
 };
 
-const deleteBlog = async (req, res) => {
+const deleteBlog = async (req, res, next) => {
   const id = req.params.id;
 
   try {
     const blog = await Blog.findById(id).populate("profile");
 
     if (!blog) {
-      return res.status(404).json({ error: "Blog not found" });
+      throw Object.assign(new Error("Blog not found"), { status: 404 });
     }
 
     if (!blog.profile.user.equals(req.user._id)) {
-      return res
-        .status(403)
-        .json({ error: "Unauthorized to delete this blog" });
+      throw Object.assign(new Error("Unauthorized to delete this blog"), {
+        status: 403,
+      });
     }
 
     await blog.remove();
-
     return res.json({ redirect: "/blogs" });
   } catch (err) {
-    console.error(
-      "Blog Delete: Error occurred while deleting the blog",
-      err.message
-    );
-    return res.status(500).json({ error: "Internal Server error" });
+    next(err);
   }
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const { Filter } = await import("bad-words");
   const filter = new Filter();
   try {
-    // Profanity/Spam Detection
     // TODO: Client Side Pending
+    // Profanity/Spam Detection
     if (filter.isProfane(req.body.body)) {
       return res
         .status(400)
@@ -111,7 +101,7 @@ const create = async (req, res) => {
         .json({ error: "Title contains inappropriate language." });
     }
 
-    const profile = await findProfileByUser(req.user);
+    const profile = await findProfileByUser(req.user, next);
 
     const blog = new Blog({
       ...req.body,
@@ -125,16 +115,11 @@ const create = async (req, res) => {
     await blog.save();
     res.redirect("/blogs");
   } catch (err) {
-    //  TODO: Do not remove the catch console.logs unless we have a global handler
-    console.log(
-      "Blog Create Post: Error occurred while creating blog!",
-      err.message
-    );
-    return res.status(400).json({ errorMessage: err.message });
+    next(err);
   }
 };
 
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   const { Filter } = await import("bad-words");
   const filter = new Filter();
 
@@ -163,8 +148,8 @@ const update = async (req, res) => {
         .json({ error: "Title contains inappropriate language." });
     }
 
-    blog.title = sanitizeHtml(req.body.title);
-    blog.body = sanitizeHtml(req.body.body);
+    blog.title = sanitizeInput(req.body.title);
+    blog.body = sanitizeInput(req.body.body);
     blog.tags = req.body.tags;
 
     if (req.file) {
@@ -175,19 +160,15 @@ const update = async (req, res) => {
 
     return res.redirect(`/blogs/${blogId}`);
   } catch (err) {
-    console.log(
-      "Blog Update Post: Error occurred while updating blog",
-      err.message
-    );
-    return res.send(400).json({ errorMessage: err.message });
+    next(err);
   }
 };
 
-const like = async (req, res) => {
+const like = async (req, res, next) => {
   const blogId = req.params.id;
 
   try {
-    const profile = await findProfileByUser(req.user);
+    const profile = await findProfileByUser(req.user, next);
 
     const blog = await Blog.findOne({ _id: blogId }).populate("likes");
     if (!blog) throw new Error("BLOG_NOT_FOUND");
@@ -200,20 +181,17 @@ const like = async (req, res) => {
     const result = await blog.save();
     res.status(200).json({ message: "Successfully dislike the blog.", result });
   } catch (err) {
-    console.log(
-      "Blog Like Post: Error occurred while fetch the blog/profile!",
-      err.message
-    );
+    next(err);
   }
 };
 
-const dislike = async (req, res) => {
+const dislike = async (req, res, next) => {
   const blogId = req.params.id;
 
   try {
-    const blog = await Blog.findOne({ _id: blogId });
+    const profile = await findProfileByUser(req.user, next);
 
-    const profile = await findProfileByUser(req.user);
+    const blog = await Blog.findOne({ _id: blogId });
 
     if (!blog) {
       return res.send("BLOG_NOT_FOUND");
@@ -235,10 +213,7 @@ const dislike = async (req, res) => {
       result,
     });
   } catch (err) {
-    console.log(
-      "Blog Dislike Post: Error occurred while fetching blog/profile!",
-      err
-    );
+    next(err);
   }
 };
 

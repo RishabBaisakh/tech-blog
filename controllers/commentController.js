@@ -2,12 +2,12 @@ const Comment = require("../models/comment");
 const Blog = require("../models/blog");
 const { findProfileByUser } = require("../utils/profileUtils");
 
-const handleCreate = async (req, res) => {
+const handleCreate = async (req, res, next) => {
   const user = req.user;
   const blogId = req.body.blogId;
 
   try {
-    const profile = await findProfileByUser(user._id);
+    const profile = await findProfileByUser(user._id, next);
 
     const blog = await Blog.findOne({ _id: blogId });
     if (!blog) {
@@ -25,10 +25,7 @@ const handleCreate = async (req, res) => {
       res.redirect("/blogs");
     }
   } catch (err) {
-    console.log(
-      "Comment Post: Eror occurred while fetching current profile!",
-      err
-    );
+    next(err);
   }
 };
 

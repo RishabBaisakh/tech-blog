@@ -41,11 +41,9 @@
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // get the values!
     const email = emailInput.value;
     const password = passwordInput.value;
 
-    // reset validation states
     emailInput.classList.remove("is-invalid");
     passwordInput.classList.remove("is-invalid");
 
@@ -65,7 +63,6 @@
       hasError = true;
     }
 
-    // stop if from the api call
     if (hasError) return;
 
     try {

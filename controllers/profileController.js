@@ -1,9 +1,9 @@
 const Profile = require("../models/profile");
 const { findProfileByUser } = require("../utils/profileUtils");
 
-const viewDetails = async (req, res) => {
+const viewDetails = async (req, res, next) => {
   try {
-    const profile = await findProfileByUser(req.user);
+    const profile = await findProfileByUser(req.user, next);
 
     if (profile) {
       return res.render("profile", { title: "Profile", profile });
@@ -11,13 +11,13 @@ const viewDetails = async (req, res) => {
       return res.redirect("profile/create");
     }
   } catch (err) {
-    console.log("Profile Get: Error occurred while fetch profile!", err);
+    next(err);
   }
 };
 
-const viewCreate = async (req, res) => {
+const viewCreate = async (req, res, next) => {
   try {
-    const profile = await findProfileByUser(req.user);
+    const profile = await findProfileByUser(req.user, next);
 
     if (profile) {
       return res.redirect("/profile");
@@ -25,13 +25,13 @@ const viewCreate = async (req, res) => {
       return res.render("profile/create", { title: "Create Profile" });
     }
   } catch (err) {
-    console.log("Profile Create Get: Error occurred while fetch profile!", err);
+    next(err);
   }
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   try {
-    const existingProfile = await findProfileByUser(req.user);
+    const existingProfile = await findProfileByUser(req.user, next);
 
     if (existingProfile) {
       return res.redirect("/profile");
@@ -41,26 +41,17 @@ const create = async (req, res) => {
         image: req.file,
         user: req.user,
       });
-      profile
-        .save()
-        .then((result) => {
-          return res.redirect("/profile");
-        })
-        .catch((err) => {
-          console.log("Error occured while editing the profile!", err);
-        });
+      await profile.save();
+      return res.redirect("/profile");
     }
   } catch (err) {
-    console.log(
-      "Profile Create Post: Error occurred while fetching profile!",
-      err
-    );
+    next(err);
   }
 };
 
-const viewEdit = async (req, res) => {
+const viewEdit = async (req, res, next) => {
   try {
-    const profile = await findProfileByUser(req.user);
+    const profile = await findProfileByUser(req.user, next);
 
     if (profile) {
       return res.render("profile/edit", {
@@ -71,13 +62,13 @@ const viewEdit = async (req, res) => {
       return res.redirect("/profile/create");
     }
   } catch (err) {
-    console.log("Profile Edit Get: Error occurred while fetching the profile!");
+    next(err);
   }
 };
 
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   try {
-    const profile = await findProfileByUser(req.user);
+    const profile = await findProfileByUser(req.user, next);
 
     if (!profile) {
       return res.redirect("/profile/create");
@@ -89,17 +80,11 @@ const update = async (req, res) => {
         profile.image = req.file;
       }
 
-      profile
-        .save()
-        .then((result) => res.redirect("/profile"))
-        .catch((err) => {
-          console.log("Error occurred while updating the profile!", err);
-        });
+      await profile.save();
+      return res.redirect("/profile");
     }
   } catch (err) {
-    console.log(
-      "Profile Update Post: Error occurred while fetching the profile!"
-    );
+    next(err);
   }
 };
 

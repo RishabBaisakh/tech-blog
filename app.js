@@ -2,12 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
-const upload = require("./middlewares/uploadImageMiddleware");
 const mongoose = require("mongoose");
-const blogRoutes = require("./routes/blogRoutes");
 const cookieParser = require("cookie-parser");
-const { requireAuth, checkUser } = require("./middlewares/authMiddleware");
+const { checkUser } = require("./middlewares/authMiddleware");
 const { checkProfile } = require("./middlewares/profileMiddleware");
+const errorHandler = require("./middlewares/errorHandler");
 const routes = require("./routes");
 const port = process.env.PORT || 3000;
 
@@ -58,3 +57,6 @@ app.get("/", (req, res) => {
 app.use((req, res) => {
   res.status(404).render("404", { title: "Oops!" });
 });
+
+// Global error handler (MUST be last)
+app.use(errorHandler);
