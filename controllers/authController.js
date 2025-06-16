@@ -17,6 +17,7 @@ const mapUserError = (err) => {
 
   if (err.code === 11000) {
     errors.email = "The email is already registered";
+    err.status = 409; // Conflict
     return errors;
   }
 
@@ -49,7 +50,12 @@ const handleSignup = async (req, res, next) => {
     const token = createToken(user._id);
     // requires time in miliseconds
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-    return res.status(201).json({ user: user._id });
+    return res
+      .status(201)
+      .json({
+        user: user._id,
+        nextUrl: user.role === "admin" ? "/admin/dashboard" : "/blogs",
+      });
   } catch (err) {
     err.mappedErrors = mapUserError(err);
     err.status = 400;

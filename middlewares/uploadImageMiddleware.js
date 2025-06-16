@@ -1,6 +1,5 @@
 const multer = require("multer");
 
-// TODO: change uploaf paths based on the model
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "public/uploads/");
