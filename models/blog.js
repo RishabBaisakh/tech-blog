@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const commentSchema = require("../models/comment");
 
-// TODO: Add validation in the schemas and enforce it everywhere
 const blogSchema = new mongoose.Schema(
   {
     title: {
@@ -14,6 +13,7 @@ const blogSchema = new mongoose.Schema(
     body: {
       type: String,
       required: [true, "Body is required."],
+      minlength: [100, "Body must be at least 100 characters."],
       maxlength: [5000, "Body cannot exceed 5000 characters."],
       trim: true,
     },
@@ -34,9 +34,18 @@ const blogSchema = new mongoose.Schema(
     image: {
       filename: String,
       path: String,
-      url: String, // stored as a file path or CDN/cloud url
-      mimType: String,
-      size: Number,
+      url: String,
+      mimType: {
+        type: String,
+        match: [
+          /^image\/(jpeg|png|webp)$/,
+          "Only JPEG, PNG, or WebP files are allowed.",
+        ],
+      },
+      size: {
+        type: Number,
+        max: [5 * 1024 * 1024, "Image must be smaller than 5MB."],
+      },
       originlName: String,
     },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Profile" }],
