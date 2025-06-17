@@ -46,8 +46,11 @@ const profileSchema = mongoose.Schema(
       ref: "User",
       required: true,
     },
-    // TODO: Finish this!
-    // about: {},
+    about: {
+      type: String,
+      maxlength: [200, "About section cannot exceed 1000 characters."],
+      trim: true,
+    },
   },
   { timestamps: true }
 );

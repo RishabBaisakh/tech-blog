@@ -75,6 +75,7 @@ const update = async (req, res, next) => {
     } else {
       profile.firstName = req.body.firstName;
       profile.lastName = req.body.lastName;
+      profile.about = req.body.about;
 
       if (req.file) {
         profile.image = req.file;

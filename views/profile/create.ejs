@@ -14,7 +14,7 @@
               enctype="multipart/form-data"
             >
               <div class="mb-3">
-                <label for="firstName" class="form-label">First Name</label>
+                <label for="firstName" class="form-label">First name</label>
                 <input
                   type="text"
                   class="form-control"
@@ -25,7 +25,7 @@
               </div>
 
               <div class="mb-3">
-                <label for="lastName" class="form-label">Last Name</label>
+                <label for="lastName" class="form-label">Last name</label>
                 <input
                   type="text"
                   class="form-control"
@@ -36,13 +36,31 @@
               </div>
 
               <div class="mb-4">
-                <label for="image" class="form-label">Profile Image</label>
+                <label for="image" class="form-label">Profile image</label>
                 <input
                   type="file"
                   class="form-control"
                   id="image"
                   name="image"
                 />
+              </div>
+
+              <div class="mb-4">
+                <label for="image" class="form-label"
+                  >Write something about yourself</label
+                >
+                <textarea
+                  class="form-control"
+                  id="about"
+                  name="about"
+                  rows="3"
+                  required
+                  maxlength="200"
+                ></textarea>
+                <span
+                  class="form-text text-end d-block small text-muted"
+                  id="aboutCharCount"
+                ></span>
               </div>
 
               <button type="submit" class="btn btn-primary w-100">
@@ -57,3 +75,14 @@
 
   <%- include('../partials/footer.ejs') %>
 </body>
+<script>
+  const aboutCharCount = document.getElementById("aboutCharCount");
+
+  document.addEventListener("DOMContentLoaded", () => {
+    aboutCharCount.textContent = "";
+  });
+
+  document.getElementById("about").addEventListener("input", (e) => {
+    aboutCharCount.textContent = `${e.target.value.length}/500`;
+  });
+</script>

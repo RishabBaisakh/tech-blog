@@ -3,25 +3,33 @@
   <%- include('../partials/nav.ejs') %>
 
   <main class="container py-5">
-    <div class="card mx-auto" style="max-width: 500px">
-      <div class="card-body text-center d-flex flex-column">
+    <div class="card mx-auto shadow" style="max-width: 500px">
+      <div class="card-body text-center d-flex flex-column align-items-center">
         <img
           src="/uploads/<%= profile.image.filename %>"
           alt="Profile Image"
-          class="img-thumbnail rounded-circle mb-3 mx-auto shadow"
+          class="img-thumbnail rounded-circle mb-3 shadow-sm"
           style="width: 150px; height: 150px; object-fit: cover"
         />
-        <p class="card-text">
-          <strong>First Name:</strong> <%= profile.firstName %>
-        </p>
-        <p class="card-text">
-          <strong>Last Name:</strong> <%= profile.lastName %>
-        </p>
-        <a href="/profile/edit" class="btn btn-outline-primary mb-3 float-end"
+
+        <h4 class="mb-1"><%= profile.firstName %> <%= profile.lastName %></h4>
+        <a href="/profile/edit" class="btn btn-outline-primary btn-sm mb-3"
           >Edit Profile</a
         >
+
+        <% if (profile.about && profile.about.trim()) { %>
+        <blockquote class="blockquote text-muted mt-2 px-3">
+          <p class="mb-0" style="white-space: pre-wrap"><%= profile.about %></p>
+          <footer class="blockquote-footer mt-1">About Me</footer>
+        </blockquote>
+        <% } else { %>
+        <p class="text-muted fst-italic mt-3">
+          This user hasn't written anything about themselves yet.
+        </p>
+        <% } %>
       </div>
     </div>
   </main>
+
+  <%- include('../partials/footer.ejs') %>
 </body>
-<%- include('../partials/footer.ejs') %>

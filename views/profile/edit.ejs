@@ -51,6 +51,25 @@
           </div>
           <% } %>
 
+          <div class="mb-4">
+            <label for="image" class="form-label"
+              >Write something about yourself</label
+            >
+            <textarea
+              class="form-control"
+              id="about"
+              name="about"
+              rows="3"
+              required
+              maxlength="200"
+              data-about='<%- JSON.stringify(profile.about || "") %>'
+            ></textarea>
+            <span
+              class="form-text text-end d-block small text-muted"
+              id="aboutCharCount"
+            ></span>
+          </div>
+
           <button type="submit" class="btn btn-primary w-100">Submit</button>
         </form>
       </div>
@@ -59,3 +78,16 @@
 
   <%- include('../partials/footer.ejs') %>
 </body>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const about = document.getElementById("about");
+    const rawValue = about.dataset.about;
+
+    try {
+      about.value = JSON.parse(rawValue);
+    } catch (err) {
+      console.error("Invalid JSON in data-about:", err);
+    }
+  });
+</script>
