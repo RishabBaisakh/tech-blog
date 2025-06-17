@@ -2,16 +2,24 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="container my-5">
+  <main
+    class="container my-5"
+    role="main"
+    aria-labelledby="create-profile-title"
+  >
     <div class="row justify-content-center">
       <div class="col-md-6">
         <div class="card shadow-sm">
           <div class="card-body">
-            <h3 class="card-title text-center mb-4">Create Your Profile</h3>
+            <h3 id="create-profile-title" class="card-title text-center mb-4">
+              Create Your Profile
+            </h3>
             <form
               action="/profile/create"
               method="POST"
               enctype="multipart/form-data"
+              novalidate
+              aria-describedby="aboutCharCount"
             >
               <div class="mb-3">
                 <label for="firstName" class="form-label">First name</label>
@@ -21,7 +29,12 @@
                   id="firstName"
                   name="firstName"
                   required
+                  aria-required="true"
+                  aria-describedby="firstNameHelp"
                 />
+                <div id="firstNameHelp" class="form-text">
+                  Enter your first name.
+                </div>
               </div>
 
               <div class="mb-3">
@@ -32,7 +45,12 @@
                   id="lastName"
                   name="lastName"
                   required
+                  aria-required="true"
+                  aria-describedby="lastNameHelp"
                 />
+                <div id="lastNameHelp" class="form-text">
+                  Enter your last name.
+                </div>
               </div>
 
               <div class="mb-4">
@@ -42,13 +60,18 @@
                   class="form-control"
                   id="image"
                   name="image"
+                  accept="image/*"
+                  aria-describedby="imageHelp"
                 />
+                <div id="imageHelp" class="form-text">
+                  Upload an image file (optional).
+                </div>
               </div>
 
               <div class="mb-4">
-                <label for="image" class="form-label"
-                  >Write something about yourself</label
-                >
+                <label for="about" class="form-label">
+                  Write something about yourself
+                </label>
                 <textarea
                   class="form-control"
                   id="about"
@@ -56,10 +79,15 @@
                   rows="3"
                   required
                   maxlength="200"
+                  aria-required="true"
+                  aria-describedby="aboutCharCount aboutHelp"
                 ></textarea>
+                <div id="aboutHelp" class="form-text">Max 200 characters.</div>
                 <span
                   class="form-text text-end d-block small text-muted"
                   id="aboutCharCount"
+                  aria-live="polite"
+                  aria-atomic="true"
                 ></span>
               </div>
 
@@ -75,14 +103,16 @@
 
   <%- include('../partials/footer.ejs') %>
 </body>
+
 <script>
+  const about = document.getElementById("about");
   const aboutCharCount = document.getElementById("aboutCharCount");
 
   document.addEventListener("DOMContentLoaded", () => {
-    aboutCharCount.textContent = "";
+    aboutCharCount.textContent = `0/200`;
   });
 
-  document.getElementById("about").addEventListener("input", (e) => {
-    aboutCharCount.textContent = `${e.target.value.length}/500`;
+  about.addEventListener("input", (e) => {
+    aboutCharCount.textContent = `${e.target.value.length}/200`;
   });
 </script>

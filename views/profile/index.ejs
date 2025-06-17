@@ -2,28 +2,38 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="container py-5">
+  <main class="container py-5" role="main" aria-labelledby="profile-name">
     <div class="card mx-auto shadow" style="max-width: 500px">
       <div class="card-body text-center d-flex flex-column align-items-center">
         <img
           src="/uploads/<%= profile.image.filename %>"
-          alt="Profile Image"
+          alt="Profile image of <%= profile.firstName %> <%= profile.lastName %>"
           class="img-thumbnail rounded-circle mb-3 shadow-sm"
           style="width: 150px; height: 150px; object-fit: cover"
         />
 
-        <h4 class="mb-1"><%= profile.firstName %> <%= profile.lastName %></h4>
-        <a href="/profile/edit" class="btn btn-outline-primary btn-sm mb-3"
-          >Edit Profile</a
+        <h1 id="profile-name" class="mb-1 fs-4">
+          <%= profile.firstName %> <%= profile.lastName %>
+        </h1>
+        <a
+          href="/profile/edit"
+          class="btn btn-outline-primary btn-sm mb-3"
+          aria-label="Edit Profile"
         >
+          Edit Profile
+        </a>
 
         <% if (profile.about && profile.about.trim()) { %>
-        <blockquote class="blockquote text-muted mt-2 px-3">
-          <p class="mb-0" style="white-space: pre-wrap"><%= profile.about %></p>
-          <footer class="blockquote-footer mt-1">About Me</footer>
-        </blockquote>
+        <section aria-labelledby="about-me-label" class="w-100 px-3 mt-2">
+          <h2 id="about-me-label" class="visually-hidden">About Me</h2>
+          <blockquote class="blockquote text-muted">
+            <p class="mb-0" style="white-space: pre-wrap">
+              <%= profile.about %>
+            </p>
+          </blockquote>
+        </section>
         <% } else { %>
-        <p class="text-muted fst-italic mt-3">
+        <p class="text-muted fst-italic mt-3" role="note">
           This user hasn't written anything about themselves yet.
         </p>
         <% } %>

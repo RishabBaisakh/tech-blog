@@ -1,8 +1,11 @@
-<!-- Edit Blog Button -->
 <button
+  type="button"
   class="btn btn-primary"
   data-bs-toggle="modal"
   data-bs-target="#editBlogModal"
+  aria-haspopup="dialog"
+  aria-controls="editBlogModal"
+  aria-expanded="false"
   aria-label="Edit blog post"
 >
   <i class="bi bi-pencil-square" aria-hidden="true"></i>
@@ -12,6 +15,8 @@
   class="modal fade"
   id="editBlogModal"
   tabindex="-1"
+  role="dialog"
+  aria-modal="true"
   aria-labelledby="editBlogModalLabel"
   aria-hidden="true"
 >
@@ -24,7 +29,7 @@
         id="edit-blog-form"
         class="blog-form"
       >
-        <input type="hidden" name="blogId" value="<%= blog._id %>">
+        <input type="hidden" name="blogId" value="<%= blog._id %>" />
 
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="editBlogModalLabel">Edit Blog</h1>
@@ -32,7 +37,7 @@
             type="button"
             class="btn-close"
             data-bs-dismiss="modal"
-            aria-label="Close"
+            aria-label="Close edit blog modal"
           ></button>
         </div>
 
@@ -45,8 +50,11 @@
               id="title"
               name="title"
               value="<%= blog.title %>"
+              maxlength="70"
               required
+              aria-describedby="titleHelp"
             />
+            <div id="titleHelp" class="form-text">Max 70 characters</div>
           </div>
 
           <div class="mb-3">
@@ -56,8 +64,11 @@
               id="body"
               name="body"
               rows="6"
+              maxlength="5000"
               required
+              aria-describedby="bodyHelp"
             ><%= blog.body %></textarea>
+            <div id="bodyHelp" class="form-text">Max 5000 characters</div>
           </div>
 
           <div class="mb-3">
@@ -68,7 +79,9 @@
               id="image"
               name="image"
               accept="image/*"
+              aria-describedby="imageHelp"
             />
+            <div id="imageHelp" class="form-text">Upload an image (optional)</div>
           </div>
 
           <div class="mb-4">
@@ -79,16 +92,18 @@
               name="tags"
               multiple
               aria-label="Select up to five tags"
+              aria-describedby="tagsHelp"
             >
               <% allTags.forEach(tag => { %>
                 <option
                   value="<%= tag._id %>"
-                  <%= blog.tags.includes(tag._id) ? 'selected' : '' %>>
+                  <%= blog.tags.includes(tag._id) ? "selected" : "" %>
+                >
                   <%= tag.label %>
                 </option>
               <% }) %>
             </select>
-            <div class="form-text">You can select up to 5 tags.</div>
+            <div id="tagsHelp" class="form-text">You can select up to 5 tags.</div>
           </div>
         </div>
 

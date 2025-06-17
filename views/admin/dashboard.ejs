@@ -2,14 +2,20 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="container py-5">
+  <main class="container py-5" id="admin-dashboard">
+    <header class="mb-5">
+      <h1 class="visually-hidden">Admin Blog Dashboard</h1>
+    </header>
+
     <!-- Pending Blogs -->
     <% if (pendingBlogs.length > 0) { %>
-    <section class="mb-5 card shadow">
+    <section class="mb-5 card shadow" aria-labelledby="pending-heading">
       <div class="card-body">
-        <h4>
-          <span class="badge bg-warning text-dark">Pending Blogs</span>
-        </h4>
+        <h2 id="pending-heading" class="h4">
+          <span class="badge bg-warning text-dark" aria-label="Pending Blogs"
+            >Pending Blogs</span
+          >
+        </h2>
         <%- include("./partials/blogsTable.ejs", { blogs: pendingBlogs }) %>
       </div>
     </section>
@@ -17,34 +23,42 @@
 
     <!-- Approved Blogs -->
     <% if (approvedBlogs.length > 0) { %>
-    <section class="mb-5 card shadow">
+    <section class="mb-5 card shadow" aria-labelledby="approved-heading">
       <div class="card-body">
-        <h4>
-          <span class="badge bg-success">Approved Blogs</span>
-        </h4>
+        <h2 id="approved-heading" class="h4">
+          <span class="badge bg-success" aria-label="Approved Blogs"
+            >Approved Blogs</span
+          >
+        </h2>
         <%- include("./partials/blogsTable.ejs", { blogs: approvedBlogs }) %>
       </div>
     </section>
+    <% } %>
 
     <!-- Rejected Blogs -->
-    <% } %> <% if (rejectedBlogs.length > 0) { %>
-    <section class="mb-5 card shadow">
+    <% if (rejectedBlogs.length > 0) { %>
+    <section class="mb-5 card shadow" aria-labelledby="rejected-heading">
       <div class="card-body">
-        <h4>
-          <span class="badge bg-danger">Rejected Blogs</span>
-        </h4>
+        <h2 id="rejected-heading" class="h4">
+          <span class="badge bg-danger" aria-label="Rejected Blogs"
+            >Rejected Blogs</span
+          >
+        </h2>
         <%- include("./partials/blogsTable.ejs", { blogs: rejectedBlogs }) %>
       </div>
     </section>
     <% } %>
 
     <!-- Admin Access -->
-    <section class="mt-5">
-      <h4 class="mb-3">
-        <span class="badge bg-primary">Grant Admin Access</span>
-      </h4>
-      <!-- Add admin form or functionality here -->
-      <p class="text-muted">Feature coming soon.</p>
+    <section class="mt-5 card shadow-sm" aria-labelledby="admin-access-heading">
+      <div class="card-body">
+        <h2 id="admin-access-heading" class="h4 mb-3">
+          <span class="badge bg-primary" aria-label="Grant Admin Access"
+            >Grant Admin Access</span
+          >
+        </h2>
+        <p class="text-muted" aria-live="polite">Feature coming soon.</p>
+      </div>
     </section>
   </main>
 

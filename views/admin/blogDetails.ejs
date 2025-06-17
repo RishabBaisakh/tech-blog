@@ -4,16 +4,23 @@
 
   <main class="container pb-5">
     <nav aria-label="Breadcrumb" class="mb-3 d-flex justify-content-between">
-      <a class="icon-link icon-link-hover" href="/admin/dashboard">
+      <a
+        class="icon-link icon-link-hover"
+        href="/admin/dashboard"
+        aria-label="Back to Blogs Dashboard"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="bi"
           viewBox="0 0 16 16"
-          aria-hidden="true"
           width="16"
           height="16"
           fill="currentColor"
+          role="img"
+          focusable="false"
+          aria-hidden="true"
         >
+          <title>Back</title>
           <path
             fill-rule="evenodd"
             d="M15 8a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 7.5H14.5a.5.5 0 0 1 .5.5z"
@@ -21,16 +28,23 @@
         </svg>
         <span>Back to Blogs</span>
       </a>
+
       <% if (blog.approvalStatus === "pending") { %>
-      <div class="d-flex gap-2">
+      <div class="d-flex gap-2" role="group" aria-label="Moderation buttons">
         <button
           class="btn btn-success"
           id="approveBtn"
           data-id="<%= blog._id %>"
+          aria-label="Approve blog"
         >
           Approve
         </button>
-        <button class="btn btn-danger" id="rejectBtn" data-id="<%= blog._id %>">
+        <button
+          class="btn btn-danger"
+          id="rejectBtn"
+          data-id="<%= blog._id %>"
+          aria-label="Reject blog"
+        >
           Reject
         </button>
       </div>
@@ -45,18 +59,21 @@
             src="/uploads/<%= blog.image.filename %>"
             class="card-img-top"
             style="height: 300px"
-            alt="<%= blog.title %> featured image"
+            alt="Featured image for blog titled <%= blog.title %>"
           />
           <% } %>
+
           <div class="card-body">
             <% if (blog.approvalStatus) { %>
             <span
               class="badge <% if (blog.approvalStatus === 'approved') { %> bg-success <% } else if (blog.approvalStatus === 'pending') { %> bg-warning text-dark <% } else if (blog.approvalStatus === 'rejected') { %> bg-danger <% } %> mb-2"
+              aria-label="Approval status: <%= blog.approvalStatus %>"
             >
               <%= blog.approvalStatus.charAt(0).toUpperCase() +
               blog.approvalStatus.slice(1) %>
             </span>
             <% } %>
+
             <h2 id="blog-title" class="card-title mb-3"><%= blog.title %></h2>
             <p class="card-text fs-5"><%= blog.body %></p>
           </div>
@@ -64,13 +81,13 @@
       </div>
 
       <div class="col-lg-4 mt-4 mt-lg-0">
-        <aside class="card shadow-sm">
+        <aside class="card shadow-sm" aria-labelledby="author-heading">
           <div class="card-body text-center">
             <div class="mb-3">
               <% if (blog.profile.image) { %>
               <img
                 src="/uploads/<%= blog.profile.image.filename %>"
-                alt="Profile Image"
+                alt="Profile picture of <%= blog.profile.firstName %> <%= blog.profile.lastName %>"
                 class="img-thumbnail rounded-circle mb-3 mx-auto shadow"
                 style="width: 70px; height: 70px; object-fit: cover"
               />
@@ -78,11 +95,13 @@
               <div
                 class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center"
                 style="width: 60px; height: 60px; font-size: 1.5rem"
+                aria-hidden="true"
               >
                 <%= blog.profile.firstName.charAt(0) %>
               </div>
               <% } %>
-              <h6 class="mt-2 mb-0">
+
+              <h6 id="author-heading" class="mt-2 mb-0">
                 <%= blog.profile.firstName %> <%= blog.profile.lastName %>
               </h6>
               <p class="text-muted small mb-0">Author</p>
@@ -90,8 +109,11 @@
 
             <hr />
 
-            <h6>Tags</h6>
-            <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <h6 id="tags-heading">Tags</h6>
+            <div
+              class="d-flex flex-wrap gap-2 justify-content-center"
+              aria-labelledby="tags-heading"
+            >
               <% if (blog.tags && blog.tags.length > 0) { %> <%
               blog.tags.forEach(tag => { %>
               <span class="badge bg-secondary"><%= tag.label %></span>
@@ -124,17 +146,15 @@
             },
           });
 
-          if (result.ok) {
-            location.reload();
-          }
+          if (result.ok) location.reload();
         } catch (err) {
-          console.log("Error occured while approve action");
+          console.log("Error occurred during approval.");
         }
       }
     });
 
     rejectButton?.addEventListener("click", async () => {
-      const blogId = approveButton.getAttribute("data-id");
+      const blogId = rejectButton.getAttribute("data-id");
       if (confirm("Are you sure you want to reject this blog?")) {
         try {
           const result = await fetch(`/api/admin/blogs/${blogId}/reject`, {
@@ -144,11 +164,9 @@
             },
           });
 
-          if (result.ok) {
-            location.reload();
-          }
+          if (result.ok) location.reload();
         } catch (err) {
-          console.log("Error occured while approve action");
+          console.log("Error occurred during rejection.");
         }
       }
     });

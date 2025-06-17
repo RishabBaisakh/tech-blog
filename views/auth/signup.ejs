@@ -1,7 +1,19 @@
 <%- include("../partials/head.ejs") %> <%- include("../partials/nav.ejs") %>
-<main class="card auth-form-width-custom mx-auto shadow-lg">
+
+<main
+  class="card auth-form-width-custom mx-auto shadow-lg"
+  role="main"
+  aria-labelledby="signup-title"
+>
   <div class="card-body">
-    <form class="needs-validation" novalidate>
+    <h1 id="signup-title" class="visually-hidden">Sign Up</h1>
+    <form
+      class="needs-validation"
+      novalidate
+      aria-describedby="form-errors"
+      aria-live="polite"
+      aria-atomic="true"
+    >
       <div class="form-floating mb-3">
         <input
           type="email"
@@ -10,9 +22,12 @@
           name="email"
           placeholder="name@example.com"
           required
+          aria-describedby="email-error"
+          aria-invalid="false"
+          autocomplete="email"
         />
         <label for="email">Email address</label>
-        <div class="invalid-feedback">Email is required</div>
+        <div id="email-error" class="invalid-feedback" role="alert"></div>
       </div>
       <div class="form-floating">
         <input
@@ -22,44 +37,61 @@
           name="password"
           placeholder="Password"
           required
+          aria-describedby="password-error"
+          aria-invalid="false"
+          autocomplete="new-password"
         />
         <label for="password">Password</label>
-        <div class="invalid-feedback">Password is required</div>
+        <div id="password-error" class="invalid-feedback" role="alert"></div>
       </div>
-      <button class="btn btn-secondary w-100 mt-4">Sign up</button>
+
+      <div
+        id="form-errors"
+        class="visually-hidden"
+        role="alert"
+        aria-live="assertive"
+      ></div>
+
+      <button type="submit" class="btn btn-secondary w-100 mt-4">
+        Sign up
+      </button>
     </form>
   </div>
 </main>
 
 <script>
   const form = document.querySelector("form");
-  const emailErrors = document.querySelector(".email.error");
-  const passwordErrors = document.querySelector(".password.error");
   const emailInput = form.email;
   const passwordInput = form.password;
+  const emailErrorDiv = document.getElementById("email-error");
+  const passwordErrorDiv = document.getElementById("password-error");
+  const formErrorsDiv = document.getElementById("form-errors");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = emailInput.value;
-    const password = passwordInput.value;
-
-    emailInput.classList.remove("is-invalid");
-    passwordInput.classList.remove("is-invalid");
+    // Clear previous errors and aria-invalid
+    [emailInput, passwordInput].forEach((input) => {
+      input.classList.remove("is-invalid");
+      input.setAttribute("aria-invalid", "false");
+    });
+    emailErrorDiv.textContent = "";
+    passwordErrorDiv.textContent = "";
+    formErrorsDiv.textContent = "";
 
     let hasError = false;
 
     if (!emailInput.value.trim()) {
       emailInput.classList.add("is-invalid");
-      emailInput.nextElementSibling.nextElementSibling.textContent =
-        "Email is required.";
+      emailInput.setAttribute("aria-invalid", "true");
+      emailErrorDiv.textContent = "Email is required.";
       hasError = true;
     }
 
     if (!passwordInput.value.trim()) {
       passwordInput.classList.add("is-invalid");
-      passwordInput.nextElementSibling.nextElementSibling.textContent =
-        "Password is required.";
+      passwordInput.setAttribute("aria-invalid", "true");
+      passwordErrorDiv.textContent = "Password is required.";
       hasError = true;
     }
 
@@ -68,32 +100,39 @@
     try {
       const result = await fetch("/api/signup", {
         method: "POST",
-        body: JSON.stringify({ email, password }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        body: JSON.stringify({
+          email: emailInput.value.trim(),
+          password: passwordInput.value.trim(),
+        }),
+        headers: { "Content-Type": "application/json" },
       });
 
       const data = await result.json();
+
       if (data.errors) {
         if (data.errors.email) {
           emailInput.classList.add("is-invalid");
-          emailInput.nextElementSibling.nextElementSibling.textContent =
-            data.errors.email;
+          emailInput.setAttribute("aria-invalid", "true");
+          emailErrorDiv.textContent = data.errors.email;
         }
         if (data.errors.password) {
           passwordInput.classList.add("is-invalid");
-          passwordInput.nextElementSibling.nextElementSibling.textContent =
-            data.errors.password;
+          passwordInput.setAttribute("aria-invalid", "true");
+          passwordErrorDiv.textContent = data.errors.password;
         }
         return;
       }
 
       if (data.user && data.nextUrl) {
         location.assign(data.nextUrl);
+      } else {
+        formErrorsDiv.textContent =
+          "Unexpected error occurred. Please try again.";
       }
     } catch (error) {
-      console.log("Login View: Error occurred while login post method!", error);
+      formErrorsDiv.textContent =
+        "An error occurred during sign up. Please try again later.";
+      console.error("Signup form error:", error);
     }
   });
 </script>

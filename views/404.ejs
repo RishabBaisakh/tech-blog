@@ -2,8 +2,16 @@
 <body>
   <%- include('./partials/nav.ejs') %>
 
-  <div class="blogs content">
-    <h2>OOPS, the page not found!</h2>
-  </div>
+  <main
+    role="main"
+    class="blogs content"
+    aria-labelledby="page-not-found-title"
+  >
+    <h1 id="page-not-found-title" tabindex="-1">
+      Oops, the page you are looking for was not found!
+    </h1>
+    <p>Please check the URL or return to the <a href="/">homepage</a>.</p>
+  </main>
+
   <%- include('./partials/footer.ejs') %>
 </body>

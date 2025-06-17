@@ -3,8 +3,16 @@
 <body>
   <%- include("partials/nav") %>
 
-  <main class="container py-5 text-center">
-    <h1 class="display-4 text-danger">Error <%= status || 500 %></h1>
+  <main
+    class="container py-5 text-center"
+    role="main"
+    aria-labelledby="error-title"
+    tabindex="-1"
+  >
+    <h1 id="error-title" class="display-4 text-danger">
+      Error <%= status || 500 %>
+    </h1>
+
     <p class="lead mt-3">
       <strong><%= message || "Something went wrong." %></strong>
     </p>
@@ -14,7 +22,7 @@
       fulfilling the request.
     </p>
 
-    <a href="/" class="btn btn-primary">Back to Home</a>
+    <a href="/" class="btn btn-primary" role="button">Back to Home</a>
   </main>
 
   <%- include("partials/footer") %>

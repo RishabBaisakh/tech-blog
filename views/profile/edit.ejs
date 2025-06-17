@@ -2,14 +2,16 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="container py-5">
+  <main class="container py-5" role="main" aria-labelledby="edit-profile-title">
     <div class="card mx-auto" style="max-width: 500px">
       <div class="card-body">
-        <h2 class="card-title mb-4">Edit Profile</h2>
+        <h2 id="edit-profile-title" class="card-title mb-4">Edit Profile</h2>
         <form
           action="/profile/update"
           method="POST"
           enctype="multipart/form-data"
+          novalidate
+          aria-describedby="aboutCharCount aboutHelp"
         >
           <div class="mb-3">
             <label for="firstName" class="form-label">First Name:</label>
@@ -20,7 +22,12 @@
               value="<%= profile.firstName %>"
               class="form-control"
               required
+              aria-required="true"
+              aria-describedby="firstNameHelp"
             />
+            <div id="firstNameHelp" class="form-text">
+              Enter your first name.
+            </div>
           </div>
 
           <div class="mb-3">
@@ -32,19 +39,32 @@
               value="<%= profile.lastName %>"
               class="form-control"
               required
+              aria-required="true"
+              aria-describedby="lastNameHelp"
             />
+            <div id="lastNameHelp" class="form-text">Enter your last name.</div>
           </div>
 
           <div class="mb-3">
-            <label for="image" class="form-label">Image:</label>
-            <input type="file" id="image" name="image" class="form-control" />
+            <label for="image" class="form-label">Profile Image:</label>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              class="form-control"
+              accept="image/*"
+              aria-describedby="imageHelp"
+            />
+            <div id="imageHelp" class="form-text">
+              Upload a new profile image (optional).
+            </div>
           </div>
 
           <% if (profile.image && profile.image.filename) { %>
           <div class="mb-3 text-center">
             <img
               src="/uploads/<%= profile.image.filename %>"
-              alt="Profile Image"
+              alt="Current profile image"
               class="img-thumbnail rounded-circle"
               style="width: 150px; height: 150px; object-fit: cover"
             />
@@ -52,7 +72,7 @@
           <% } %>
 
           <div class="mb-4">
-            <label for="image" class="form-label"
+            <label for="about" class="form-label"
               >Write something about yourself</label
             >
             <textarea
@@ -62,11 +82,16 @@
               rows="3"
               required
               maxlength="200"
+              aria-required="true"
+              aria-describedby="aboutCharCount aboutHelp"
               data-about='<%- JSON.stringify(profile.about || "") %>'
             ></textarea>
+            <div id="aboutHelp" class="form-text">Max 200 characters.</div>
             <span
               class="form-text text-end d-block small text-muted"
               id="aboutCharCount"
+              aria-live="polite"
+              aria-atomic="true"
             ></span>
           </div>
 
@@ -89,5 +114,12 @@
     } catch (err) {
       console.error("Invalid JSON in data-about:", err);
     }
+
+    const aboutCharCount = document.getElementById("aboutCharCount");
+    aboutCharCount.textContent = `${about.value.length}/200`;
+
+    about.addEventListener("input", () => {
+      aboutCharCount.textContent = `${about.value.length}/200`;
+    });
   });
 </script>

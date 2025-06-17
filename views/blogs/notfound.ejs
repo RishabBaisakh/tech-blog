@@ -2,8 +2,15 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="content notfound-blog">
-    <h1>The blog you are looking for does not exist!</h1>
+  <main
+    class="content notfound-blog"
+    role="main"
+    aria-labelledby="notfound-title"
+  >
+    <h1 id="notfound-title" tabindex="-1">
+      The blog you are looking for does not exist!
+    </h1>
   </main>
+
   <%- include('../partials/footer.ejs') %>
 </body>

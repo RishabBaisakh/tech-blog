@@ -1,10 +1,11 @@
-<nav class="mb-2">
+<nav class="mb-2" aria-label="Primary navigation">
   <div class="d-flex flex-column flex-grow-1 w-100">
-    <a href="/" class="text-decoration-none">
+    <a href="/" class="text-decoration-none" aria-label="Tech Blog home">
       <h1 class="mb-0 flex-grow-1">Tech Blog</h1>
     </a>
     <p class="text-muted">A tech knowledge hub for<br />everyone to share</p>
   </div>
+
   <% if (user) { %>
   <div class="container d-flex flex-column">
     <div class="row justify-content-end">
@@ -12,59 +13,95 @@
         <button
           class="nav-profile-dropdown shadow-lg dropdown-toggle rounded-circle text-white"
           type="button"
+          id="user-menu-button"
           data-bs-toggle="dropdown"
           aria-expanded="false"
+          aria-haspopup="true"
+          aria-controls="user-menu"
         >
           <%= user.email.charAt(0).toUpperCase() %>
+          <span class="visually-hidden">User menu</span>
         </button>
 
-        <div
+        <ul
           class="dropdown-menu shadow rounded-4 p-3 text-center"
           style="min-width: 240px"
+          id="user-menu"
+          role="menu"
+          aria-labelledby="user-menu-button"
         >
-          <div class="mb-2">
+          <li>
             <div
-              class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center"
+              class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mx-auto mb-2"
               style="
                 width: 64px;
                 height: 64px;
                 font-size: 1.5rem;
                 font-weight: 500;
               "
+              aria-hidden="true"
             >
               <%= user.email.charAt(0).toUpperCase() %>
             </div>
-          </div>
-          <p class="mb-0 fw-semibold"><%= user.email %></p>
-          <p class="mb-2 text-muted small">
-            <% if (profile) { %> Hi, <%= profile.firstName %>! <% } else { %>
-            Welcome! <% } %>
-          </p>
+          </li>
+          <li>
+            <p class="mb-0 fw-semibold" role="none"><%= user.email %></p>
+          </li>
+          <li>
+            <p class="mb-2 text-muted small" role="none">
+              <% if (profile) { %> Hi, <%= profile.firstName %>! <% } else { %>
+              Welcome! <% } %>
+            </p>
+          </li>
 
-          <hr class="my-2" />
+          <li><hr class="my-2" /></li>
 
-          <a class="dropdown-item py-2" href="/profile">
-            <i class="bi bi-person me-2"></i> Profile
-          </a>
-          <a class="dropdown-item py-2 text-danger" href="/logout">
-            <i class="bi bi-box-arrow-right me-2"></i> Logout
-          </a>
-        </div>
+          <li role="none">
+            <a class="dropdown-item py-2" href="/profile" role="menuitem">
+              <i class="bi bi-person me-2" aria-hidden="true"></i> Profile
+            </a>
+          </li>
+          <li role="none">
+            <a
+              class="dropdown-item py-2 text-danger"
+              href="/logout"
+              role="menuitem"
+            >
+              <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>
+              Logout
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
+
     <div class="row mt-auto">
-      <ul class="d-flex justify-content-end">
-        <li><a href="/blogs">All Blogs</a></li>
+      <ul
+        class="d-flex justify-content-end"
+        role="menubar"
+        aria-label="Secondary navigation"
+      >
+        <li role="none"><a href="/blogs" role="menuitem">All Blogs</a></li>
       </ul>
     </div>
   </div>
 
   <% } else { %>
-  <ul class="auth-links">
-    <% if (typeof path !== 'undefined' && path === "/login") {%>
-    <li><a class="btn btn-outline-secondary" href="/signup">Sign Up</a></li>
+  <ul
+    class="auth-links d-flex gap-2"
+    role="menubar"
+    aria-label="Authentication links"
+  >
+    <% if (typeof path !== 'undefined' && path === "/login") { %>
+    <li role="none">
+      <a class="btn btn-outline-secondary" href="/signup" role="menuitem"
+        >Sign Up</a
+      >
+    </li>
     <% } else { %>
-    <li><a class="btn btn-outline-primary" href="/login">Login</a></li>
+    <li role="none">
+      <a class="btn btn-outline-primary" href="/login" role="menuitem">Login</a>
+    </li>
     <% } %>
   </ul>
   <% } %>

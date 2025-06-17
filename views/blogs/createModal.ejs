@@ -3,6 +3,9 @@
   class="btn btn-primary w-auto ms-auto"
   data-bs-toggle="modal"
   data-bs-target="#createBlogModal"
+  aria-haspopup="dialog"
+  aria-controls="createBlogModal"
+  aria-expanded="false"
 >
   Create new blog
 </button>
@@ -11,7 +14,9 @@
   class="modal fade"
   id="createBlogModal"
   tabindex="-1"
+  role="dialog"
   aria-labelledby="createBlogModalLabel"
+  aria-modal="true"
   aria-hidden="true"
 >
   <div class="modal-dialog">
@@ -31,9 +36,10 @@
             type="button"
             class="btn-close"
             data-bs-dismiss="modal"
-            aria-label="Close"
+            aria-label="Close create blog modal"
           ></button>
         </div>
+
         <div class="modal-body">
           <div class="mb-3">
             <label for="title" class="form-label">Blog Title</label>
@@ -44,10 +50,13 @@
               name="title"
               maxlength="70"
               required
+              aria-describedby="titleCharCount"
             />
             <span
-              class="form-text text-end d-block small text-muted"
               id="titleCharCount"
+              class="form-text text-end d-block small text-muted"
+              aria-live="polite"
+              aria-atomic="true"
             ></span>
           </div>
 
@@ -58,12 +67,15 @@
               id="body"
               name="body"
               rows="6"
-              required
               maxlength="5000"
+              required
+              aria-describedby="bodyCharCount"
             ></textarea>
             <span
-              class="form-text text-end d-block small text-muted"
               id="bodyCharCount"
+              class="form-text text-end d-block small text-muted"
+              aria-live="polite"
+              aria-atomic="true"
             ></span>
           </div>
 
@@ -73,17 +85,18 @@
           </div>
 
           <div class="mb-4">
-            <label for="tags" class="form-label">Tag</label>
+            <label for="tags" class="form-label">Tags</label>
             <select
               class="form-select"
-              aria-label="Select upto five tags."
               name="tags"
               id="tags"
               multiple
+              aria-label="Select up to five tags"
             ></select>
-            <div class="tag-list"></div>
+            <div class="tag-list" aria-live="polite"></div>
           </div>
         </div>
+
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary w-100">Create</button>
         </div>
@@ -95,13 +108,11 @@
 <script>
   const getTags = async () => {
     try {
-      // fetch tags!
       const res = await fetch("/api/tags");
       if (!res.ok) throw new Error("Failed to fetch tags.");
-
       return (await res.json())?.tags ?? [];
     } catch (err) {
-      console.log("Error occurred while fetching the tags!", err);
+      console.error("Error occurred while fetching the tags!", err);
       return [];
     }
   };
@@ -111,6 +122,7 @@
   createBlogModal.addEventListener("show.bs.modal", async () => {
     const tags = await getTags();
     const tagsSelect = createBlogModal.querySelector("#tags");
+    tagsSelect.innerHTML = ""; // Clear previous options
 
     tags.forEach((tag) => {
       const option = document.createElement("option");
@@ -119,25 +131,33 @@
       tagsSelect.appendChild(option);
     });
 
-    const choices = new Choices(tagsSelect, {
-      removeItemButton: true,
-      placeholderValue: "Select up to five tags",
-      searchPlaceholderValue: "Search tags",
-      closeDropdownOnSelect: false,
-      maxItemCount: 5,
-      maxItemText: (maxItemCount) => {
-        return `You can select up to a maximum of ${maxItemCount} tags only.`;
-      },
-    });
-
-    createBlogModal.querySelector("#tags");
+    if (!tagsSelect._choicesInstance) {
+      createBlogModal._choicesInstance = new Choices(tagsSelect, {
+        removeItemButton: true,
+        placeholderValue: "Select up to five tags",
+        searchPlaceholderValue: "Search tags",
+        closeDropdownOnSelect: false,
+        maxItemCount: 5,
+        maxItemText: (maxItemCount) =>
+          `You can select up to a maximum of ${maxItemCount} tags only.`,
+      });
+    } else {
+      createBlogModal._choicesInstance.setChoices(
+        tags.map((tag) => ({ value: tag._id, label: tag.label })),
+        "value",
+        "label",
+        false
+      );
+    }
   });
 
   createBlogModal.addEventListener("hidden.bs.modal", () => {
     createBlogModal.querySelector("form").reset();
-    // Reset character counters
     document.getElementById("titleCharCount").textContent = "";
     document.getElementById("bodyCharCount").textContent = "";
+    if (createBlogModal._choicesInstance) {
+      createBlogModal._choicesInstance.clearStore();
+    }
   });
 
   const bodyField = document.getElementById("body");

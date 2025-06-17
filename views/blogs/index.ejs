@@ -2,24 +2,33 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="container pt-2 pb-5 blogs">
+  <main
+    class="container pt-2 pb-5 blogs"
+    role="main"
+    aria-label="Blog posts list"
+  >
     <div class="row mb-3"><%- include("./createModal") %></div>
     <div class="row g-4">
       <% if (blogs.length > 0) { %> <% blogs.forEach(blog => { %>
-      <div class="col-md-6 col-lg-4">
+      <article class="col-md-6 col-lg-4">
         <div class="card h-100 shadow-sm hover-shadow-lg">
           <a
             href="/blogs/<%= blog._id %>"
             class="text-decoration-none text-dark"
+            aria-describedby="desc-<%= blog._id %>"
           >
             <img
               src="/uploads/<%= blog.image.filename %>"
               class="card-img-top custom-img-height"
-              alt="Blog Image"
+              alt="Image for blog titled <%= blog.title %>"
+              loading="lazy"
             />
             <div class="card-body">
-              <h5 class="card-title"><%= blog.title %></h5>
-              <p class="card-text text-muted custom-blog-body-height">
+              <h2 class="card-title h5"><%= blog.title %></h2>
+              <p
+                id="desc-<%= blog._id %>"
+                class="card-text text-muted custom-blog-body-height"
+              >
                 <%= blog.body.length > 100 ? blog.body.substring(0, 100) + '...'
                 : blog.body %>
               </p>
@@ -27,52 +36,69 @@
           </a>
 
           <% if (blog.approvalStatus === "approved") { %>
-          <div class="px-3 pb-2 d-flex justify-content-end gap-2">
+          <div
+            class="px-3 pb-2 d-flex justify-content-end gap-2"
+            role="group"
+            aria-label="Blog interaction buttons"
+          >
             <%- include('./commentModal.ejs', { comments: blog.comments, blogId:
             blog._id }) %> <% if (blog.likes.map(like =>
             like.toString()).includes(currentProfileId)) { %>
             <button
               class="btn btn-outline-danger btn-sm dislike-button"
               data-id="<%= blog._id %>"
+              aria-pressed="true"
+              aria-label="Remove like from blog titled <%= blog.title %>"
             >
-              <i class="bi bi-heart-fill text-danger"></i> Dislike
+              <i class="bi bi-heart-fill text-danger" aria-hidden="true"></i>
+              Dislike
             </button>
             <% } else { %>
             <button
               class="btn btn-outline-danger btn-sm like-button"
               data-id="<%= blog._id %>"
+              aria-pressed="false"
+              aria-label="Like blog titled <%= blog.title %>"
             >
-              <i class="bi bi-heart"></i> Like
+              <i class="bi bi-heart" aria-hidden="true"></i> Like
             </button>
             <% } %>
           </div>
           <% } %>
 
-          <div
+          <footer
             class="card-footer d-flex flex-wrap justify-content-between align-items-center small text-muted mt-auto"
           >
-            <span
-              ><%= new Date(blog.createdAt).toLocaleDateString('en-US', { year:
-              'numeric', month: 'short', day: 'numeric' }) %></span
-            >
+            <time datetime="<%= blog.createdAt.toISOString() %>">
+              <%= new Date(blog.createdAt).toLocaleDateString('en-US', { year:
+              'numeric', month: 'short', day: 'numeric' }) %>
+            </time>
             <span
               ><%= blog.profile.firstName %> <%= blog.profile.lastName %></span
             >
             <% if (blog.approvalStatus === "pending") { %>
-            <span class="badge bg-warning text-dark"
+            <span
+              class="badge bg-warning text-dark"
+              aria-label="Approval status: pending"
               ><%= blog.approvalStatus %></span
             >
             <% } else if (blog.approvalStatus === "approved") { %>
-            <span class="badge bg-success"><%= blog.approvalStatus %></span>
+            <span
+              class="badge bg-success"
+              aria-label="Approval status: approved"
+              ><%= blog.approvalStatus %></span
+            >
             <% } else { %>
-            <span class="badge bg-danger"><%= blog.approvalStatus %></span>
+            <span class="badge bg-danger" aria-label="Approval status: rejected"
+              ><%= blog.approvalStatus %></span
+            >
             <% } %>
-          </div>
+          </footer>
         </div>
-      </div>
+      </article>
       <% }) %> <% } else { %>
       <div class="col-12">
-        <div class="alert alert-info text-center">
+        <div class="alert alert-info text-center" role="alert">
           There are no blogs to display.
         </div>
       </div>
@@ -83,30 +109,42 @@
   <%- include('../partials/footer.ejs') %>
 
   <script>
-    const likeButtons = document.querySelectorAll(".like-button");
-    const dislikeButtons = document.querySelectorAll(".dislike-button");
+    document.addEventListener("DOMContentLoaded", () => {
+      const likeButtons = document.querySelectorAll(".like-button");
+      const dislikeButtons = document.querySelectorAll(".dislike-button");
 
-    likeButtons.forEach((button) => {
-      const blogId = button.getAttribute("data-id");
-      button.addEventListener("click", async (e) => {
-        const result = await fetch(`/api/blogs/${blogId}/like`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      likeButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+          const blogId = button.dataset.id;
+          try {
+            const res = await fetch(`/api/blogs/${blogId}/like`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+            });
+            if (res.ok) {
+              // TODO: Toggle UI state
+              location.reload();
+            }
+          } catch (error) {
+            console.error("Failed to like blog:", error);
+          }
         });
       });
-    });
 
-    dislikeButtons.forEach(async (button) => {
-      const blogId = button.getAttribute("data-id");
-
-      button.addEventListener("click", async (e) => {
-        const result = await fetch(`/api/blogs/${blogId}/dislike`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+      dislikeButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+          const blogId = button.dataset.id;
+          try {
+            const res = await fetch(`/api/blogs/${blogId}/dislike`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+            });
+            if (res.ok) {
+              location.reload();
+            }
+          } catch (error) {
+            console.error("Failed to dislike blog:", error);
+          }
         });
       });
     });

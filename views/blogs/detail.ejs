@@ -2,9 +2,15 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main class="container pb-5">
-    <nav aria-label="Breadcrumb" class="mb-3 d-flex justify-content-between">
-      <a class="icon-link icon-link-hover" href="/blogs">
+  <main class="container pb-5" role="main">
+    <nav
+      aria-label="Breadcrumb"
+      class="mb-3 d-flex justify-content-between align-items-center"
+    >
+      <a
+        class="icon-link icon-link-hover d-flex align-items-center"
+        href="/blogs"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="bi"
@@ -13,37 +19,44 @@
           width="16"
           height="16"
           fill="currentColor"
+          focusable="false"
         >
           <path
             fill-rule="evenodd"
             d="M15 8a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 7.5H14.5a.5.5 0 0 1 .5.5z"
           />
         </svg>
-        <span>Back to Blogs</span>
+        <span class="ms-1">Back to Blogs</span>
       </a>
+
       <% if (blog.profile.user.equals(user._id)) { %>
       <div class="d-flex gap-2">
         <button
           class="btn btn-danger delete"
           data-doc="<%= blog._id %>"
           aria-label="Delete blog post"
+          type="button"
         >
           <i class="bi bi-trash" aria-hidden="true"></i>
         </button>
 
-        <%- include("./editModal", {blog}) %>
+        <%- include("./editModal", { blog }) %>
       </div>
       <% } %>
     </nav>
 
     <div class="row">
       <div class="col-lg-8">
-        <article class="card shadow-lg" aria-labelledby="blog-title">
+        <article
+          class="card shadow-lg"
+          aria-labelledby="blog-title"
+          tabindex="-1"
+        >
           <% if (blog.image && blog.image.filename) { %>
           <img
             src="/uploads/<%= blog.image.filename %>"
             class="card-img-top"
-            style="height: 300px"
+            style="height: 300px; object-fit: cover"
             alt="<%= blog.title %> featured image"
           />
           <% } %>
@@ -54,14 +67,17 @@
         </article>
       </div>
 
-      <div class="col-lg-4 mt-4 mt-lg-0">
-        <aside class="card shadow-sm">
+      <aside
+        class="col-lg-4 mt-4 mt-lg-0"
+        aria-label="Author information and blog metadata"
+      >
+        <div class="card shadow-sm">
           <div class="card-body text-center">
             <div class="mb-3">
               <% if (blog.profile.image) { %>
               <img
                 src="/uploads/<%= blog.profile.image.filename %>"
-                alt="Profile Image"
+                alt="Profile image of <%= blog.profile.firstName %> <%= blog.profile.lastName %>"
                 class="img-thumbnail rounded-circle mb-3 mx-auto shadow"
                 style="width: 70px; height: 70px; object-fit: cover"
               />
@@ -69,6 +85,8 @@
               <div
                 class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center"
                 style="width: 60px; height: 60px; font-size: 1.5rem"
+                aria-label="Author initial <%= blog.profile.firstName.charAt(0) %>"
+                role="img"
               >
                 <%= blog.profile.firstName.charAt(0) %>
               </div>
@@ -81,8 +99,11 @@
 
             <hr />
 
-            <h6>Tags</h6>
-            <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <h6 id="tags-label">Tags</h6>
+            <div
+              class="d-flex flex-wrap gap-2 justify-content-center"
+              aria-labelledby="tags-label"
+            >
               <% if (blog.tags && blog.tags.length > 0) { %> <%
               blog.tags.forEach(tag => { %>
               <span class="badge bg-secondary"><%= tag.label %></span>
@@ -91,11 +112,16 @@
               <% } %>
             </div>
           </div>
-        </aside>
-      </div>
+        </div>
+      </aside>
     </div>
 
-    <div id="delete-status" class="visually-hidden" aria-live="polite"></div>
+    <div
+      id="delete-status"
+      class="visually-hidden"
+      aria-live="polite"
+      role="status"
+    ></div>
   </main>
 
   <%- include('../partials/footer.ejs') %>
