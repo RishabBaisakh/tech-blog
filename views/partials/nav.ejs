@@ -24,13 +24,21 @@
         </button>
 
         <ul
-          class="dropdown-menu shadow rounded-4 p-3 text-center"
+          class="dropdown-menu shadow rounded-4 text-center pt-4"
           style="min-width: 240px"
           id="user-menu"
           role="menu"
           aria-labelledby="user-menu-button"
         >
           <li>
+            <% if (profile.image) { %>
+            <img
+              src="/uploads/<%= profile.image.filename %>"
+              alt="Profile image of <%= profile.firstName %> <%= profile.lastName %>"
+              class="img-thumbnail rounded-circle mb-3 shadow-sm"
+              style="width: 68px; height: 68px; object-fit: cover"
+            />
+            <% } else { %>
             <div
               class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mx-auto mb-2"
               style="
@@ -43,18 +51,17 @@
             >
               <%= user.email.charAt(0).toUpperCase() %>
             </div>
+            <% } %>
           </li>
+
           <li>
-            <p class="mb-0 fw-semibold" role="none"><%= user.email %></p>
-          </li>
-          <li>
-            <p class="mb-2 text-muted small" role="none">
+            <p class="mb-3 text-muted small" role="none">
               <% if (profile) { %> Hi, <%= profile.firstName %>! <% } else { %>
               Welcome! <% } %>
             </p>
           </li>
 
-          <li><hr class="my-2" /></li>
+          <li><hr class="my-2 mx-4" /></li>
 
           <li role="none">
             <a class="dropdown-item py-2" href="/profile" role="menuitem">

@@ -97,6 +97,10 @@ nav .dropdown-menu {
   width: 350px;
 }
 
+nav .dropdown-menu li {
+  margin-left: 0;
+}
+
 .auth-links .btn {
   white-space: nowrap;
 }
