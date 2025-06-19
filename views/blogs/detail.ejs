@@ -65,6 +65,43 @@
             <p class="card-text fs-5"><%= blog.body %></p>
           </div>
         </article>
+        <div
+          class="card-footer d-flex justify-content-between align-items-center flex-wrap px-4 py-3 gap-3"
+        >
+          <div class="d-flex align-items-center gap-2">
+            <button
+              class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 like-button"
+              id="like-dislike-button"
+              data-type="<%= (blog.likes.map(like =>
+            like.toString()).includes(currentProfileId)) ? "dislike" : "like" %>"
+              data-id="<%= blog._id %>"
+              aria-label="<%= blog.likes.includes(user._id) ? 'Unlike' : 'Like' %> this blog"
+              aria-pressed="<%= blog.likes.includes(user._id) %>"
+            >
+              <% if (blog.likes.includes(user._id)) { %>
+              <i class="bi bi-heart-fill text-danger" aria-hidden="true"></i>
+              <% } else { %>
+              <i class="bi bi-heart" aria-hidden="true"></i>
+              <% } %>
+              <span
+                ><%= blog.likes.length %> Like<%= blog.likes.length === 1 ? '' :
+                's' %></span
+              >
+            </button>
+
+            <a
+              href="#comments-section"
+              class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
+              aria-label="Jump to comments section"
+            >
+              <i class="bi bi-chat-dots" aria-hidden="true"></i>
+              <span
+                ><%= blog.comments.length %> Comment<%= blog.comments.length ===
+                1 ? '' : 's' %></span
+              >
+            </a>
+          </div>
+        </div>
       </div>
 
       <aside
@@ -128,6 +165,25 @@
 
   <script>
     const trashButton = document.querySelector(".delete");
+    const likeDislikeButton = document.getElementById("like-dislike-button");
+
+    likeDislikeButton.addEventListener("click", async () => {
+      const type = likeDislikeButton.dataset.type;
+      const blogId = likeDislikeButton.dataset.id;
+      
+      try {
+        const res = await fetch(`/api/blogs/${blogId}/${type}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (res.ok) {
+          // TODO: Toggle UI state
+          location.reload();
+        }
+      } catch(err) {
+        console.log(`Failed to ${type} blog`, err.message)
+      }
+    });
 
     trashButton?.addEventListener("click", (event) => {
       event.preventDefault();

@@ -44,6 +44,8 @@ const viewDetails = async (req, res, next) => {
   try {
     const allTags = await Tag.find();
 
+    const profile = await findProfileByUser(req.user, next);
+
     const blog = await Blog.findById(id).populate("tags").populate("profile");
 
     if (!blog) {
@@ -54,6 +56,7 @@ const viewDetails = async (req, res, next) => {
       blog: blog,
       title: "Blog Details",
       allTags,
+      currentProfileId: profile._id.toString() || null,
     });
   } catch (err) {
     next(err);
@@ -173,7 +176,10 @@ const like = async (req, res, next) => {
     const blog = await Blog.findOne({ _id: blogId }).populate("likes");
     if (!blog) throw new Error("BLOG_NOT_FOUND");
 
-    const hasLiked = blog.likes.includes(profile._id);
+    const hasLiked = blog.likes
+      .map((likedProfile) => likedProfile._id.toString())
+      .includes(profile._id.toString());
+
     if (hasLiked) return res.send("ALREADY_LIKED");
 
     blog.likes.push(profile);
