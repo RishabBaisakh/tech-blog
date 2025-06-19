@@ -81,7 +81,19 @@
 
           <div class="mb-3">
             <label for="image" class="form-label">Image</label>
-            <input type="file" class="form-control" id="image" name="image" />
+            <input
+              type="file"
+              class="form-control"
+              id="image"
+              name="image"
+              aria-describedby="image-error"
+            />
+            <div
+              id="image-error"
+              class="invalid-feedback"
+              role="alert"
+              aria-live="assertive"
+            ></div>
           </div>
 
           <div class="mb-4">
@@ -118,6 +130,28 @@
   };
 
   const createBlogModal = document.getElementById("createBlogModal");
+  const MAX_FILE_SIZE_MB = 5; // Max size in MB
+  const imageInput = document.getElementById("image");
+  const imageError = document.getElementById("image-error");
+
+  imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+
+      if (fileSizeMB > MAX_FILE_SIZE_MB) {
+        imageError.textContent = `File size must be less than ${MAX_FILE_SIZE_MB} MB`;
+        imageInput.classList.add("is-invalid");
+        imageInput.setAttribute("aria-invalid", "true");
+        imageInput.value = "";
+      } else {
+        imageInput.classList.remove("is-invalid");
+        imageInput.setAttribute("aria-invalid", "false");
+        imageError.textContent = "";
+      }
+    }
+  });
 
   createBlogModal.addEventListener("show.bs.modal", async () => {
     const tags = await getTags();
