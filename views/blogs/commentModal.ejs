@@ -1,3 +1,5 @@
+<!-- TODO: remove this blogID since we are using REST! -->
+
 <button
   class="btn btn-outline-primary btn-sm comment-button me-2"
   data-bs-toggle="modal"
@@ -11,7 +13,7 @@
 </button>
 
 <div
-  class="modal fade"
+  class="modal fade commentModal"
   id="commentModal_<%= blogId %>"
   tabindex="-1"
   role="dialog"
@@ -68,7 +70,7 @@
       </div>
 
       <div class="modal-footer">
-        <form class="w-100" method="POST" action="/api/comment">
+        <form class="w-100">
           <input type="hidden" name="blogId" value="<%= blogId %>" />
           <div class="mb-2">
             <label for="comment_<%= blogId %>" class="visually-hidden"
@@ -103,3 +105,9 @@
     </div>
   </div>
 </div>
+
+<script>
+  const addComment = () => {
+    console.log("Add Comment!");
+  };
+</script>

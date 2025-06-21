@@ -3,8 +3,12 @@ const Blog = require("../models/blog");
 const { findProfileByUser } = require("../utils/profileUtils");
 
 const handleCreate = async (req, res, next) => {
+  console.log("what!");
   const user = req.user;
-  const blogId = req.body.blogId;
+  const blogId = req.body?.blogId;
+  console.log("🚀 ~ handleCreate ~ req.body:", req.body);
+
+  if (!blogId) throw new Error("blogId is required");
 
   try {
     const profile = await findProfileByUser(user._id, next);
@@ -21,8 +25,8 @@ const handleCreate = async (req, res, next) => {
       await newComment.save();
       blog.comments.push(newComment);
 
-      await blog.save();
-      res.redirect("/blogs");
+      const result = await blog.save();
+      return res.status(200).json({ result });
     }
   } catch (err) {
     next(err);

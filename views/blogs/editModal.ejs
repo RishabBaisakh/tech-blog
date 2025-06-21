@@ -54,7 +54,10 @@
               required
               aria-describedby="titleHelp"
             />
-            <div id="titleHelp" class="form-text">Max 70 characters</div>
+            <div class="d-flex justify-content-between">
+              <div id="titleHelp" class="form-text">Max 70 characters</div>
+              <div id="titleCharCount" class="form-text"></div>
+            </div>
           </div>
 
           <div class="mb-3">
@@ -68,7 +71,10 @@
               required
               aria-describedby="bodyHelp"
             ><%= blog.body %></textarea>
-            <div id="bodyHelp" class="form-text">Max 5000 characters</div>
+            <div class="d-flex justify-content-between">
+              <div id="bodyHelp" class="form-text">Max 5000 characters</div>
+              <div id="bodyCharCount" class="form-text"></div>
+            </div>
           </div>
 
           <div class="mb-3">
@@ -81,10 +87,16 @@
               accept="image/*"
               aria-describedby="imageHelp"
             />
+            <div
+              id="image-error"
+              class="invalid-feedback"
+              role="alert"
+              aria-live="assertive"
+            ></div>
             <div id="imageHelp" class="form-text">Upload an image (optional)</div>
           </div>
 
-          <div class="mb-4">
+          <div>
             <label for="tags" class="form-label">Tags</label>
             <select
               class="form-select"
@@ -117,6 +129,29 @@
 
 <script>
   const editBlogModal = document.getElementById("editBlogModal");
+  
+  const MAX_FILE_SIZE_MB = 5; // Max size in MB
+  const imageInput = document.getElementById("image");
+  const imageError = document.getElementById("image-error");
+
+  imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+
+      if (fileSizeMB > MAX_FILE_SIZE_MB) {
+        imageError.textContent = `File size must be less than ${MAX_FILE_SIZE_MB} MB`;
+        imageInput.classList.add("is-invalid");
+        imageInput.setAttribute("aria-invalid", "true");
+        imageInput.value = "";
+      } else {
+        imageInput.classList.remove("is-invalid");
+        imageInput.setAttribute("aria-invalid", "false");
+        imageError.textContent = "";
+      }
+    }
+  });
   let choicesInstance;
 
   editBlogModal.addEventListener("show.bs.modal", () => {
@@ -142,5 +177,17 @@
       choicesInstance.destroy();
       choicesInstance = null;
     }
+  });
+
+  const bodyField = document.getElementById("body");
+  bodyField.addEventListener("input", () => {
+    const length = bodyField.value.length;
+    document.getElementById("bodyCharCount").textContent = `${length}/5000`;
+  });
+
+  const titleField = document.getElementById("title");
+  titleField.addEventListener("input", () => {
+    const length = titleField.value.length;
+    document.getElementById("titleCharCount").textContent = `${length}/70`;
   });
 </script>

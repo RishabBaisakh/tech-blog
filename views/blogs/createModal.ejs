@@ -39,7 +39,6 @@
             aria-label="Close create blog modal"
           ></button>
         </div>
-
         <div class="modal-body">
           <div class="mb-3">
             <label for="title" class="form-label">Blog Title</label>
@@ -52,14 +51,11 @@
               required
               aria-describedby="titleCharCount"
             />
-            <span
-              id="titleCharCount"
-              class="form-text text-end d-block small text-muted"
-              aria-live="polite"
-              aria-atomic="true"
-            ></span>
+            <div class="d-flex justify-content-between">
+              <div id="titleHelp" class="form-text">Max 70 characters</div>
+              <div id="titleCharCount" class="form-text"></div>
+            </div>
           </div>
-
           <div class="mb-3">
             <label for="body" class="form-label">Blog Body</label>
             <textarea
@@ -71,14 +67,11 @@
               required
               aria-describedby="bodyCharCount"
             ></textarea>
-            <span
-              id="bodyCharCount"
-              class="form-text text-end d-block small text-muted"
-              aria-live="polite"
-              aria-atomic="true"
-            ></span>
+            <div class="d-flex justify-content-between">
+              <div id="bodyHelp" class="form-text">Max 5000 characters</div>
+              <div id="bodyCharCount" class="form-text"></div>
+            </div>
           </div>
-
           <div class="mb-3">
             <label for="image" class="form-label">Image</label>
             <input
@@ -88,6 +81,9 @@
               name="image"
               aria-describedby="image-error"
             />
+            <div id="imageHelp" class="form-text">
+              Upload an image (optional)
+            </div>
             <div
               id="image-error"
               class="invalid-feedback"
@@ -96,7 +92,7 @@
             ></div>
           </div>
 
-          <div class="mb-4">
+          <div>
             <label for="tags" class="form-label">Tags</label>
             <select
               class="form-select"
@@ -105,7 +101,9 @@
               multiple
               aria-label="Select up to five tags"
             ></select>
-            <div class="tag-list" aria-live="polite"></div>
+            <div id="tagsHelp" class="form-text">
+              You can select up to 5 tags.
+            </div>
           </div>
         </div>
 
@@ -130,6 +128,7 @@
   };
 
   const createBlogModal = document.getElementById("createBlogModal");
+
   const MAX_FILE_SIZE_MB = 5; // Max size in MB
   const imageInput = document.getElementById("image");
   const imageError = document.getElementById("image-error");

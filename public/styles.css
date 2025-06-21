@@ -164,7 +164,11 @@ nav .signup {
   background-color: #e8f1fb !important;
 }
 
-/* create modal form */
+/* create/edit modal form */
+.blog-form .choices {
+  margin-bottom: 0;
+}
+
 .blog-form .choices__list--multiple .choices__item {
   background-color: var(--blog-tag-background-color) !important;
   color: white;

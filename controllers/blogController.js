@@ -46,7 +46,10 @@ const viewDetails = async (req, res, next) => {
 
     const profile = await findProfileByUser(req.user, next);
 
-    const blog = await Blog.findById(id).populate("tags").populate("profile");
+    const blog = await Blog.findById(id)
+      .populate("tags")
+      .populate({ path: "profile", populate: { path: "user" } })
+      .populate({ path: "comments", populate: { path: "author" } });
 
     if (!blog) {
       throw Object.assign(new Error("Blog not found"), { status: 404 });
