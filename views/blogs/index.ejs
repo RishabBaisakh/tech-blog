@@ -118,6 +118,37 @@
   <%- include('../partials/footer.ejs') %>
 
   <script>
+    const commentModals = document.querySelectorAll(".commentModal");
+
+    commentModals.forEach(modal => {
+      const form = modal.querySelector("form");
+      form.addEventListener("submit",  async (e) => {
+        e.preventDefault();
+
+        try {
+          const result = await fetch("/api/comment", {
+            method: "POST",
+            body: JSON.stringify({
+              content: form.content.value,
+              blogId: form.blogId.value
+            }),
+            headers: {
+              "Content-Type": "application/json"
+            }
+          })
+          
+          if (!result.ok){
+            throw new Error("Can't save comment!")
+          }
+          const blog = await result.json()
+          addComment();
+        } catch (err) {
+          // TODO: Show toast here!
+          console.log("Error while saving the comment", err.message)
+        }
+      })
+    })
+    
     document.addEventListener("DOMContentLoaded", () => {
       const likeDislikeButtons = document.querySelectorAll(".like-dislike-button");
       const likeButtons = document.querySelectorAll(".like-button");
