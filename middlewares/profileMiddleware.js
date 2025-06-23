@@ -4,7 +4,11 @@ const { findProfileByUser } = require("../utils/profileUtils");
 const checkProfile = async (req, res, next) => {
   res.locals.profile = null;
 
-  if (req.originalUrl.includes("/profile/create")) return next();
+  const bypassRoutes = ["/profile/create", "/logout"];
+
+  if (bypassRoutes.includes(req.originalUrl)) {
+    return next();
+  }
 
   const user = req.user;
 
@@ -13,7 +17,7 @@ const checkProfile = async (req, res, next) => {
       const profile = await findProfileByUser(user, next);
 
       if (!profile) {
-        res.redirect("/profile/create");
+        return res.redirect("/profile/create");
       } else {
         res.locals.profile = profile;
 

@@ -50,12 +50,10 @@ const handleSignup = async (req, res, next) => {
     const token = createToken(user._id);
     // requires time in miliseconds
     res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-    return res
-      .status(201)
-      .json({
-        user: user._id,
-        nextUrl: user.role === "admin" ? "/admin/dashboard" : "/blogs",
-      });
+    return res.status(201).json({
+      user: user._id,
+      nextUrl: user.role === "admin" ? "/admin/dashboard" : "/blogs",
+    });
   } catch (err) {
     err.mappedErrors = mapUserError(err);
     err.status = 400;
@@ -87,6 +85,7 @@ const handleLogin = async (req, res, next) => {
 };
 
 const performLogout = (req, res) => {
+  console.log("Is it coming here!");
   res.cookie("jwt", "", { maxAge: 1 });
   return res.redirect("/login");
 };
