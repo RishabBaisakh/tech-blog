@@ -19,12 +19,20 @@ const viewAll = async (req, res, next) => {
         ],
       })
         .populate({ path: "profile", populate: { path: "user" } })
-        .populate({ path: "comments", populate: { path: "author" } })
+        .populate({
+          path: "comments",
+          options: { sort: { createdAt: -1 } },
+          populate: { path: "author" },
+        })
         .sort({ createdAt: -1 });
     } else {
       blogs = await Blog.find()
         .populate({ path: "profile", populate: { path: "user" } })
-        .populate({ path: "comments", populate: { path: "author" } })
+        .populate({
+          path: "comments",
+          options: { sort: { createdAt: -1 } },
+          populate: { path: "author" },
+        })
         .sort({ createdAt: -1 });
     }
 
@@ -49,7 +57,11 @@ const viewDetails = async (req, res, next) => {
     const blog = await Blog.findById(id)
       .populate("tags")
       .populate({ path: "profile", populate: { path: "user" } })
-      .populate({ path: "comments", populate: { path: "author" } });
+      .populate({
+        path: "comments",
+        options: { sort: { createdAt: -1 } },
+        populate: { path: "author" },
+      });
 
     if (!blog) {
       throw Object.assign(new Error("Blog not found"), { status: 404 });

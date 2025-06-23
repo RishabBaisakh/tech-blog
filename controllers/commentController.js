@@ -3,10 +3,8 @@ const Blog = require("../models/blog");
 const { findProfileByUser } = require("../utils/profileUtils");
 
 const handleCreate = async (req, res, next) => {
-  console.log("what!");
   const user = req.user;
   const blogId = req.body?.blogId;
-  console.log("🚀 ~ handleCreate ~ req.body:", req.body);
 
   if (!blogId) throw new Error("blogId is required");
 
@@ -26,7 +24,7 @@ const handleCreate = async (req, res, next) => {
       blog.comments.push(newComment);
 
       const result = await blog.save();
-      return res.status(200).json({ result });
+      return res.status(201).json({ newComment });
     }
   } catch (err) {
     next(err);

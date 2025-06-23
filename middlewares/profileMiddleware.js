@@ -1,4 +1,3 @@
-const Profile = require("../models/profile");
 const { findProfileByUser } = require("../utils/profileUtils");
 
 const checkProfile = async (req, res, next) => {
