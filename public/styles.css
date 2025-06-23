@@ -173,3 +173,9 @@ nav .signup {
   background-color: var(--blog-tag-background-color) !important;
   color: white;
 }
+
+/* Profile */
+
+.profile-form {
+  max-width: 500px;
+}

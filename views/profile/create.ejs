@@ -2,101 +2,86 @@
 <body>
   <%- include('../partials/nav.ejs') %>
 
-  <main
-    class="container my-5"
-    role="main"
-    aria-labelledby="create-profile-title"
-  >
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-body">
-            <h3 id="create-profile-title" class="card-title text-center mb-4">
-              Create Your Profile
-            </h3>
-            <form
-              action="/profile/create"
-              method="POST"
-              enctype="multipart/form-data"
-              novalidate
-              aria-describedby="aboutCharCount"
-            >
-              <div class="mb-3">
-                <label for="firstName" class="form-label">First name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="firstName"
-                  name="firstName"
-                  required
-                  aria-required="true"
-                  aria-describedby="firstNameHelp"
-                />
-                <div id="firstNameHelp" class="form-text">
-                  Enter your first name.
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <label for="lastName" class="form-label">Last name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="lastName"
-                  name="lastName"
-                  required
-                  aria-required="true"
-                  aria-describedby="lastNameHelp"
-                />
-                <div id="lastNameHelp" class="form-text">
-                  Enter your last name.
-                </div>
-              </div>
-
-              <div class="mb-4">
-                <label for="image" class="form-label">Profile image</label>
-                <input
-                  type="file"
-                  class="form-control"
-                  id="image"
-                  name="image"
-                  accept="image/*"
-                  aria-describedby="imageHelp"
-                />
-                <div id="imageHelp" class="form-text">
-                  Upload an image file (optional).
-                </div>
-              </div>
-
-              <div class="mb-4">
-                <label for="about" class="form-label">
-                  Write something about yourself
-                </label>
-                <textarea
-                  class="form-control"
-                  id="about"
-                  name="about"
-                  rows="3"
-                  required
-                  maxlength="200"
-                  aria-required="true"
-                  aria-describedby="aboutCharCount aboutHelp"
-                ></textarea>
-                <div id="aboutHelp" class="form-text">Max 200 characters.</div>
-                <span
-                  class="form-text text-end d-block small text-muted"
-                  id="aboutCharCount"
-                  aria-live="polite"
-                  aria-atomic="true"
-                ></span>
-              </div>
-
-              <button type="submit" class="btn btn-primary w-100">
-                Submit
-              </button>
-            </form>
+  <main class="containe" role="main" aria-labelledby="create-profile-title">
+    <div class="card shadow-sm mx-auto my-5 profile-form">
+      <div class="card-body">
+        <h3
+          id="create-profile-title"
+          class="card-title text-center mb- text-center"
+        >
+          Create Your Profile
+        </h3>
+        <form
+          action="/profile/create"
+          method="POST"
+          enctype="multipart/form-data"
+          novalidate
+          aria-describedby="aboutCharCount"
+        >
+          <div class="mb-3">
+            <label for="firstName" class="form-label">First name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              name="firstName"
+              required
+              aria-required="true"
+              aria-describedby="firstNameHelp"
+            />
           </div>
-        </div>
+
+          <div class="mb-3">
+            <label for="lastName" class="form-label">Last name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              required
+              aria-required="true"
+              aria-describedby="lastNameHelp"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label for="image" class="form-label"
+              >Profile image (optional)</label
+            >
+            <input
+              type="file"
+              class="form-control"
+              id="image"
+              name="image"
+              accept="image/*"
+              aria-describedby="imageHelp"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label for="about" class="form-label"> About me </label>
+            <textarea
+              class="form-control"
+              id="about"
+              name="about"
+              rows="3"
+              required
+              maxlength="200"
+              aria-required="true"
+              aria-describedby="aboutCharCount aboutHelp"
+            ></textarea>
+            <div class="d-flex justify-content-end">
+              <span
+                class="form-text text-end d-block small text-muted"
+                id="aboutCharCount"
+                aria-live="polite"
+                aria-atomic="true"
+              ></span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Create</button>
+        </form>
       </div>
     </div>
   </main>

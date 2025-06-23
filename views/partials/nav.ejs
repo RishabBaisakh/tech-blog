@@ -31,7 +31,7 @@
           aria-labelledby="user-menu-button"
         >
           <li>
-            <% if (profile.image) { %>
+            <% if (profile?.image) { %>
             <img
               src="/uploads/<%= profile.image.filename %>"
               alt="Profile image of <%= profile.firstName %> <%= profile.lastName %>"

@@ -24,13 +24,15 @@
         </a>
 
         <% if (profile.about && profile.about.trim()) { %>
-        <section aria-labelledby="about-me-label" class="w-100 px-3 mt-2">
-          <h2 id="about-me-label" class="visually-hidden">About Me</h2>
-          <blockquote class="blockquote text-muted">
-            <p class="mb-0" style="white-space: pre-wrap">
-              <%= profile.about %>
-            </p>
-          </blockquote>
+        <section aria-labelledby="about-me-label" class="w-100 px-3 mt-4">
+          <div class="bg-light rounded p-3 shadow-sm">
+            <h2 id="about-me-label" class="visually-hidden">About Me</h2>
+            <blockquote class="blockquote text-muted mb-0">
+              <p class="mb-0" style="white-space: pre-wrap">
+                <%= profile.about.replace(/^\s+/, '') %>
+              </p>
+            </blockquote>
+          </div>
         </section>
         <% } else { %>
         <p class="text-muted fst-italic mt-3" role="note">
