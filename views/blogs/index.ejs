@@ -188,7 +188,6 @@
           const { newComment } = await result.json()
           addComment(newComment, modal);
         } catch (err) {
-          // TODO: Show toast here!
           console.log("Error while saving the comment", err.message)
         }
       })

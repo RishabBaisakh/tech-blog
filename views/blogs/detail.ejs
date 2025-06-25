@@ -62,7 +62,7 @@
           <% } %>
           <div class="card-body">
             <h2 id="blog-title" class="card-title mb-3"><%= blog.title %></h2>
-            <p class="card-text fs-5"><%= blog.body %></p>
+            <p class="card-text fs-5 blog-body"><%= blog.body %></p>
           </div>
         </article>
         <div
@@ -228,7 +228,6 @@
           const { newComment } = await result.json()
           addComment(newComment, modal);
         } catch (err) {
-          // TODO: Show toast here!
           console.log("Error while saving the comment", err.message)
         }
       })

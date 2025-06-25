@@ -15,7 +15,11 @@ const handleCreate = async (req, res, next) => {
     if (!blog) {
       return res.redirect("/blogs");
     } else {
-      // TODO: return comments for the approval status: rejected | pending
+      if (blog.approvalStatus !== "approved") {
+        throw new Error(
+          "The blog needs to be approved by the admin for comments"
+        );
+      }
       const newComment = new Comment({
         content: req.body.content,
         author: profile,

@@ -18,7 +18,6 @@
   role="dialog"
   aria-modal="true"
   aria-labelledby="editBlogModalLabel"
-  aria-hidden="true"
 >
   <div class="modal-dialog">
     <div class="modal-content">
@@ -54,8 +53,7 @@
               required
               aria-describedby="titleHelp"
             />
-            <div class="d-flex justify-content-between">
-              <div id="titleHelp" class="form-text">Max 70 characters</div>
+            <div class="d-flex justify-content-end">
               <div id="titleCharCount" class="form-text"></div>
             </div>
           </div>
@@ -71,14 +69,13 @@
               required
               aria-describedby="bodyHelp"
             ><%= blog.body %></textarea>
-            <div class="d-flex justify-content-between">
-              <div id="bodyHelp" class="form-text">Max 5000 characters</div>
+            <div class="d-flex justify-content-end">
               <div id="bodyCharCount" class="form-text"></div>
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="image" class="form-label">Image</label>
+            <label for="image" class="form-label">Image (optional)</label>
             <input
               type="file"
               class="form-control"
@@ -92,9 +89,33 @@
               class="invalid-feedback"
               role="alert"
               aria-live="assertive"
-            ></div>
-            <div id="imageHelp" class="form-text">Upload an image (optional)</div>
+            >
           </div>
+          </div>
+            <div id="preview-card" class="card w-full shadow-sm mb-2 <%= blog.image.filename ? 'd-block' : 'd-none' %>">
+              <img src="/uploads/<%= blog.image.filename %>" class="card-img-top" alt="Image Preview" />
+              <div class="card-body p-2 text-center">
+                <button type="button" id="remove-image" class="btn btn-danger btn-sm">
+                  Remove
+                </button>
+              </div>
+            </div>
+          <div id="preview-new-card" class="card w-full shadow-sm mb-2 d-none">
+            <img id="preview-new-image" class="card-img-top" alt="Image Preview" />
+            <div class="card-body p-2 text-center">
+              <button type="button" id="remove-new-image" class="btn btn-danger btn-sm">
+                Remove
+              </button>
+            </div>
+          </div>
+          <input
+              type="text"
+              class="form-control"
+              id="deletedImage"
+              name="deletedImage"
+              aria-describedby="deleted-image-identifier"
+              hidden
+            />
 
           <div>
             <label for="tags" class="form-label">Tags</label>
@@ -106,21 +127,21 @@
               aria-label="Select up to five tags"
               aria-describedby="tagsHelp"
             >
+              <% const selectedTagIds = blog.tags.map(tag => tag._id.toString()); %>
               <% allTags.forEach(tag => { %>
                 <option
                   value="<%= tag._id %>"
-                  <%= blog.tags.includes(tag._id) ? "selected" : "" %>
+                  <%= selectedTagIds.includes(tag._id.toString()) ? "selected" : "" %>
                 >
                   <%= tag.label %>
                 </option>
               <% }) %>
             </select>
-            <div id="tagsHelp" class="form-text">You can select up to 5 tags.</div>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary w-100">Update Blog</button>
+          <button type="submit" class="btn btn-primary w-100">Update</button>
         </div>
       </form>
     </div>
@@ -128,11 +149,24 @@
 </div>
 
 <script>
+  const removeNewImage = () => {
+    previewNewCard.classList.remove("d-block");
+    previewNewCard.classList.add("d-none");
+    previewNewImage.src = "";
+    imageInput.value = "";
+  }
+
   const editBlogModal = document.getElementById("editBlogModal");
   
   const MAX_FILE_SIZE_MB = 5; // Max size in MB
   const imageInput = document.getElementById("image");
   const imageError = document.getElementById("image-error");
+  const previewNewImage = document.getElementById("preview-new-image");
+  const removeBtn = document.getElementById("remove-image");
+  const removeNewBtn = document.getElementById("remove-new-image");
+  const previewCard = document.getElementById("preview-card");
+  const previewNewCard = document.getElementById("preview-new-card");
+  const deletedImage = document.getElementById("deletedImage")
 
   imageInput.addEventListener("change", () => {
     const file = imageInput.files[0];
@@ -145,16 +179,42 @@
         imageInput.classList.add("is-invalid");
         imageInput.setAttribute("aria-invalid", "true");
         imageInput.value = "";
+        
       } else {
         imageInput.classList.remove("is-invalid");
         imageInput.setAttribute("aria-invalid", "false");
         imageError.textContent = "";
       }
+      // Preview new image
+      const reader = new FileReader();
+        reader.onload = (e) => {
+          previewNewImage.src = e.target.result;
+          previewCard.classList.add("d-none");
+          previewCard.classList.remove("d-block");
+          previewNewCard.classList.remove("d-none")
+          previewNewCard.classList.add("d-block")
+        };
+        reader.readAsDataURL(file);
     }
   });
+
+  removeBtn.addEventListener("click", () => {
+    previewCard.classList.remove("d-block");
+    previewCard.classList.add("d-none");
+    imageInput.value = "";
+    deletedImage.value = "true";
+  });
+
+  removeNewBtn.addEventListener("click", () => {
+    removeNewImage()
+  });
+
   let choicesInstance;
 
   editBlogModal.addEventListener("show.bs.modal", () => {
+    const bodyCharCount = document.getElementById("bodyCharCount");
+    const titleCharCount = document.getElementById("titleCharCount");
+    
     const tagsSelect = editBlogModal.querySelector("#tags");
 
     if (choicesInstance) {
@@ -169,7 +229,21 @@
       maxItemCount: 5,
       maxItemText: (count) => `Maximum ${count} tags allowed.`,
     });
+
+    deletedImage.value = "";
+    if (previewCard) {
+      previewCard.classList.add("d-block");
+      previewCard.classList.remove("d-none");
+    }
   });
+
+  editBlogModal.addEventListener("hide.bs.modal", () => {
+    const focusedEl = document.activeElement;
+    if (editBlogModal.contains(focusedEl)) {
+      focusedEl.blur();
+    }
+  });
+
 
   editBlogModal.addEventListener("hidden.bs.modal", () => {
     editBlogModal.querySelector("form").reset();
@@ -177,17 +251,19 @@
       choicesInstance.destroy();
       choicesInstance = null;
     }
+
+    removeNewImage();
   });
 
   const bodyField = document.getElementById("body");
   bodyField.addEventListener("input", () => {
     const length = bodyField.value.length;
-    document.getElementById("bodyCharCount").textContent = `${length}/5000`;
+    bodyCharCount.textContent = `${length}/5000`;
   });
 
   const titleField = document.getElementById("title");
   titleField.addEventListener("input", () => {
     const length = titleField.value.length;
-    document.getElementById("titleCharCount").textContent = `${length}/70`;
+    titleCharCount.textContent = `${length}/70`;
   });
 </script>

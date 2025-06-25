@@ -105,7 +105,6 @@ const create = async (req, res, next) => {
   const { Filter } = await import("bad-words");
   const filter = new Filter();
   try {
-    // TODO: Client Side Pending
     // Profanity/Spam Detection
     if (filter.isProfane(req.body.body)) {
       return res
@@ -153,7 +152,6 @@ const update = async (req, res, next) => {
     }
 
     // Profanity/Spam detection
-    // TODO: Client Side Pending
     if (filter.isProfane(req.body.body)) {
       return res
         .status(400)
@@ -172,7 +170,11 @@ const update = async (req, res, next) => {
 
     if (req.file) {
       blog.image = req.file;
+    } else if (req.body.deletedImage === "true") {
+      console.log("it should come here!");
+      blog.image = null;
     }
+
     await blog.validate();
     await blog.save();
 

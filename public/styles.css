@@ -179,3 +179,14 @@ nav .signup {
 .profile-form {
   max-width: 500px;
 }
+
+.profile-img-thumbnail {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+/* Blog */
+.blog-body {
+  text-align: justify;
+}

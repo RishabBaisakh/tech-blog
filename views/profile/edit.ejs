@@ -81,15 +81,21 @@
               accept="image/*"
               aria-describedby="imageHelp"
             />
+            <div
+              id="image-error"
+              class="invalid-feedback"
+              role="alert"
+              aria-live="assertive"
+            ></div>
           </div>
 
           <% if (profile.image && profile.image.filename) { %>
           <div class="mb-3 text-center">
             <img
+              id="preview-image"
               src="/uploads/<%= profile.image.filename %>"
               alt="Current profile image"
-              class="img-thumbnail rounded-circle"
-              style="width: 150px; height: 150px; object-fit: cover"
+              class="profile-img-thumbnail img-thumbnail rounded-circle"
             />
           </div>
           <% } %>
@@ -127,6 +133,39 @@
 </body>
 
 <script>
+  const MAX_FILE_SIZE_MB = 5; // Max size in MB
+  const imageInput = document.getElementById("image");
+  const imageError = document.getElementById("image-error");
+  const previewImage = document.getElementById("preview-image");
+  const removeBtn = document.getElementById("remove-image");
+
+  imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+
+      if (fileSizeMB > MAX_FILE_SIZE_MB) {
+        imageError.textContent = `File size must be less than ${MAX_FILE_SIZE_MB} MB`;
+        imageInput.classList.add("is-invalid");
+        imageInput.setAttribute("aria-invalid", "true");
+        imageInput.value = "";
+      } else {
+        imageInput.classList.remove("is-invalid");
+        imageInput.setAttribute("aria-invalid", "false");
+        imageError.textContent = "";
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImage.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewImage.src = "";
+    }
+  });
+
   document.addEventListener("DOMContentLoaded", () => {
     const about = document.getElementById("about");
     const rawValue = about.dataset.about;

@@ -51,8 +51,7 @@
               required
               aria-describedby="titleCharCount"
             />
-            <div class="d-flex justify-content-between">
-              <div id="titleHelp" class="form-text">Max 70 characters</div>
+            <div class="d-flex justify-content-end">
               <div id="titleCharCount" class="form-text"></div>
             </div>
           </div>
@@ -67,29 +66,35 @@
               required
               aria-describedby="bodyCharCount"
             ></textarea>
-            <div class="d-flex justify-content-between">
-              <div id="bodyHelp" class="form-text">Max 5000 characters</div>
+            <div class="d-flex justify-content-end">
               <div id="bodyCharCount" class="form-text"></div>
             </div>
           </div>
           <div class="mb-3">
-            <label for="image" class="form-label">Image</label>
+            <label for="image" class="form-label">Image (optional)</label>
             <input
               type="file"
               class="form-control"
               id="image"
               name="image"
+              accept="image/*"
               aria-describedby="image-error"
             />
-            <div id="imageHelp" class="form-text">
-              Upload an image (optional)
-            </div>
+
             <div
               id="image-error"
               class="invalid-feedback"
               role="alert"
               aria-live="assertive"
             ></div>
+          </div>
+          <div id="preview-card" class="card w-full shadow-sm mb-2 d-none">
+            <img id="preview-image" class="card-img-top" alt="Image Preview" />
+            <div class="card-body p-2 text-center">
+              <button id="remove-image" class="btn btn-danger btn-sm">
+                Remove
+              </button>
+            </div>
           </div>
 
           <div>
@@ -101,9 +106,6 @@
               multiple
               aria-label="Select up to five tags"
             ></select>
-            <div id="tagsHelp" class="form-text">
-              You can select up to 5 tags.
-            </div>
           </div>
         </div>
 
@@ -132,6 +134,9 @@
   const MAX_FILE_SIZE_MB = 5; // Max size in MB
   const imageInput = document.getElementById("image");
   const imageError = document.getElementById("image-error");
+  const previewImage = document.getElementById("preview-image");
+  const removeBtn = document.getElementById("remove-image");
+  const previewCard = document.getElementById("preview-card");
 
   imageInput.addEventListener("change", () => {
     const file = imageInput.files[0];
@@ -149,13 +154,36 @@
         imageInput.setAttribute("aria-invalid", "false");
         imageError.textContent = "";
       }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImage.src = e.target.result;
+        previewCard.classList.add("d-block");
+        previewCard.classList.remove("d-none");
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewCard.classList.remove("d-block");
+      previewCard.classList.add("d-none");
+      previewImage.src = "";
     }
+  });
+
+  removeBtn.addEventListener("click", () => {
+    imageInput.value = "";
+    previewCard.classList.remove("d-block");
+    previewCard.classList.add("d-none");
+    previewImage.src = "";
   });
 
   createBlogModal.addEventListener("show.bs.modal", async () => {
     const tags = await getTags();
     const tagsSelect = createBlogModal.querySelector("#tags");
+    const bodyCharCount = document.getElementById("bodyCharCount");
+    const titleCharCount = document.getElementById("titleCharCount");
     tagsSelect.innerHTML = ""; // Clear previous options
+    bodyCharCount.textContent = "0/5000";
+    titleCharCount.textContent = "0/70";
 
     tags.forEach((tag) => {
       const option = document.createElement("option");
@@ -186,8 +214,8 @@
 
   createBlogModal.addEventListener("hidden.bs.modal", () => {
     createBlogModal.querySelector("form").reset();
-    document.getElementById("titleCharCount").textContent = "";
-    document.getElementById("bodyCharCount").textContent = "";
+    titleCharCount.textContent = "";
+    bodyCharCount.textContent = "";
     if (createBlogModal._choicesInstance) {
       createBlogModal._choicesInstance.clearStore();
     }
@@ -196,12 +224,12 @@
   const bodyField = document.getElementById("body");
   bodyField.addEventListener("input", () => {
     const length = bodyField.value.length;
-    document.getElementById("bodyCharCount").textContent = `${length}/5000`;
+    bodyCharCount.textContent = `${length}/5000`;
   });
 
   const titleField = document.getElementById("title");
   titleField.addEventListener("input", () => {
     const length = titleField.value.length;
-    document.getElementById("titleCharCount").textContent = `${length}/70`;
+    titleCharCount.textContent = `${length}/70`;
   });
 </script>

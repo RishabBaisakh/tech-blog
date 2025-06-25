@@ -56,6 +56,29 @@
               accept="image/*"
               aria-describedby="imageHelp"
             />
+
+            <div
+              id="image-error"
+              class="invalid-feedback"
+              role="alert"
+              aria-live="assertive"
+            ></div>
+          </div>
+          <div id="preview-card" class="card w-full shadow-sm mb-2 d-none">
+            <img
+              id="preview-image"
+              class="card-img-top rounded-circle shadow-sm img-thumbnail profile-image-thumbnail"
+              alt="Image Preview"
+            />
+            <div class="card-body p-2 text-center">
+              <button
+                type="button"
+                id="remove-image"
+                class="btn btn-danger btn-sm"
+              >
+                Remove
+              </button>
+            </div>
           </div>
 
           <div class="mb-4">
@@ -92,6 +115,51 @@
 <script>
   const about = document.getElementById("about");
   const aboutCharCount = document.getElementById("aboutCharCount");
+
+  const MAX_FILE_SIZE_MB = 5; // Max size in MB
+  const imageInput = document.getElementById("image");
+  const imageError = document.getElementById("image-error");
+  const previewImage = document.getElementById("preview-image");
+  const removeBtn = document.getElementById("remove-image");
+  const previewCard = document.getElementById("preview-card");
+
+  imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+
+    if (file) {
+      const fileSizeMB = file.size / (1024 * 1024);
+
+      if (fileSizeMB > MAX_FILE_SIZE_MB) {
+        imageError.textContent = `File size must be less than ${MAX_FILE_SIZE_MB} MB`;
+        imageInput.classList.add("is-invalid");
+        imageInput.setAttribute("aria-invalid", "true");
+        imageInput.value = "";
+      } else {
+        imageInput.classList.remove("is-invalid");
+        imageInput.setAttribute("aria-invalid", "false");
+        imageError.textContent = "";
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImage.src = e.target.result;
+        previewCard.classList.add("d-block");
+        previewCard.classList.remove("d-none");
+      };
+      reader.readAsDataURL(file);
+    } else {
+      previewCard.classList.remove("d-block");
+      previewCard.classList.add("d-none");
+      previewImage.src = "";
+    }
+  });
+
+  removeBtn.addEventListener("click", () => {
+    imageInput.value = "";
+    previewCard.classList.remove("d-block");
+    previewCard.classList.add("d-none");
+    previewImage.src = "";
+  });
 
   document.addEventListener("DOMContentLoaded", () => {
     aboutCharCount.textContent = `0/200`;
