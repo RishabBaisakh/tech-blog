@@ -85,7 +85,6 @@ const handleLogin = async (req, res, next) => {
 };
 
 const performLogout = (req, res) => {
-  console.log("Is it coming here!");
   res.cookie("jwt", "", { maxAge: 1 });
   return res.redirect("/login");
 };

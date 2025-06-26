@@ -23,10 +23,7 @@ const checkProfile = async (req, res, next) => {
         return next();
       }
     } catch (err) {
-      console.log(
-        "Check Profile Middleware: Error occurred while fetching profile",
-        err
-      );
+      next(err);
     }
   } else {
     return next();

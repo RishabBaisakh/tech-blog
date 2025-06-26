@@ -171,7 +171,6 @@ const update = async (req, res, next) => {
     if (req.file) {
       blog.image = req.file;
     } else if (req.body.deletedImage === "true") {
-      console.log("it should come here!");
       blog.image = null;
     }
 
@@ -201,8 +200,10 @@ const like = async (req, res, next) => {
 
     blog.likes.push(profile);
 
-    const result = await blog.save();
-    res.status(200).json({ message: "Successfully dislike the blog.", result });
+    await blog.save();
+    res
+      .status(200)
+      .json({ success: true, updatedLikeCount: blog.likes.length });
   } catch (err) {
     next(err);
   }
@@ -228,12 +229,14 @@ const dislike = async (req, res, next) => {
       return res.status(200).json({
         message: "User had not liked the post previously.",
         result,
+        updatedLikeCount: blog.likes.length,
       });
     }
+    const updatedBlog = await Blog.findById(blogId);
 
     return res.status(200).json({
-      message: "Successfully dislike the blog.",
-      result,
+      success: true,
+      updatedLikeCount: updatedBlog.likes.length,
     });
   } catch (err) {
     next(err);
