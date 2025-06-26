@@ -31,26 +31,14 @@
           aria-labelledby="user-menu-button"
         >
           <li>
-            <% if (profile?.image) { %>
+            <% if (profile.image.filename) { %>
             <img
               src="/uploads/<%= profile.image.filename %>"
               alt="Profile image of <%= profile.firstName %> <%= profile.lastName %>"
-              class="img-thumbnail rounded-circle mb-3 shadow-sm"
-              style="width: 68px; height: 68px; object-fit: cover"
+              class="nav-img-thumbnail img-thumbnail rounded-circle mb-3 shadow-sm"
             />
             <% } else { %>
-            <div
-              class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mx-auto mb-2"
-              style="
-                width: 64px;
-                height: 64px;
-                font-size: 1.5rem;
-                font-weight: 500;
-              "
-              aria-hidden="true"
-            >
-              <%= user.email.charAt(0).toUpperCase() %>
-            </div>
+            <i class="nav-avatar bi bi-person-circle" aria-hidden="true"></i>
             <% } %>
           </li>
 

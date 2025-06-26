@@ -186,6 +186,24 @@ nav .signup {
   object-fit: cover;
 }
 
+.profile-avatar {
+  font-size: 150px;
+  color: lightgrey;
+  display: block;
+}
+
+.nav-img-thumbnail {
+  width: 68px;
+  height: 68px;
+  object-fit: cover;
+}
+
+.nav-avatar {
+  font-size: 68px;
+  color: lightgrey;
+  display: block;
+}
+
 /* Blog */
 .blog-body {
   text-align: justify;

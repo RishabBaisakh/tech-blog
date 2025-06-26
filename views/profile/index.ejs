@@ -5,12 +5,15 @@
   <main class="container py-5" role="main" aria-labelledby="profile-name">
     <div class="card mx-auto shadow" style="max-width: 500px">
       <div class="card-body text-center d-flex flex-column align-items-center">
+        <% if (profile.image.filename) { %>
         <img
           src="/uploads/<%= profile.image.filename %>"
           alt="Profile image of <%= profile.firstName %> <%= profile.lastName %>"
-          class="img-thumbnail rounded-circle mb-3 shadow-sm"
-          style="width: 150px; height: 150px; object-fit: cover"
+          class="profile-img-thumbnail img-thumbnail rounded-circle mb-3 shadow-sm"
         />
+        <% } else { %>
+        <i class="profile-avatar bi bi-person-circle" aria-hidden="true"></i>
+        <% } %>
 
         <h1 id="profile-name" class="mb-1 fs-4">
           <%= profile.firstName %> <%= profile.lastName %>
