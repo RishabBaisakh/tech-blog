@@ -48,15 +48,5 @@ app.use(checkProfile);
 // routes
 app.use(routes);
 
-// home
-app.get("/", (req, res) => {
-  res.render("home", { title: "Home" });
-});
-
-// 404 page
-app.use((req, res) => {
-  res.status(404).render("404", { title: "Oops!" });
-});
-
 // Global error handler (MUST be last)
 app.use(errorHandler);

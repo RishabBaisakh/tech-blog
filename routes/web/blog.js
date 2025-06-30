@@ -6,6 +6,7 @@ const router = Router();
 router.get("/", blogController.viewAll);
 router.post("/create", blogController.create);
 router.post("/update", blogController.update);
+router.get("/:slug", blogController.viewDetailsBySlug);
 router.get("/:id", blogController.viewDetails);
 router.delete("/:id", blogController.deleteBlog);
 

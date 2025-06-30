@@ -9,6 +9,7 @@ const blogSchema = new mongoose.Schema(
       maxlength: [70, "Title cannot exceed 70 characters."],
       trim: true,
     },
+    slug: { type: String, unique: true },
     tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "Tag" }],
     body: {
       type: String,
@@ -53,6 +54,23 @@ const blogSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+blogSchema.pre("validate", async function (next) {
+  if (this.isModified("title") || !this.slug) {
+    const baseSlug = slugify(title, { lower: true, strict: true });
+    let slug = baseSlug;
+    let counter = 1;
+
+    while (await Blog.findOne({ slug })) {
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+
+    this.slug = slug;
+  }
+
+  next();
+});
 
 const Blog = mongoose.model("Blog", blogSchema);
 

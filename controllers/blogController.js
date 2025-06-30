@@ -46,6 +46,38 @@ const viewAll = async (req, res, next) => {
   }
 };
 
+const viewDetailsBySlug = async (req, res, next) => {
+  const slug = req.params.slug;
+
+  try {
+    const allTags = await Tag.find();
+
+    const profile = await findProfileByUser(req.user, next);
+
+    const blog = await Blog.findOne({ slug })
+      .populate("tags")
+      .populate({ path: "profile", populate: { path: "user" } })
+      .populate({
+        path: "comments",
+        options: { sort: { createdAt: -1 } },
+        populate: { path: "author" },
+      });
+
+    if (!blog) {
+      throw Object.assign(new Error("Blog not found"), { status: 404 });
+    }
+
+    res.render("blogs/detail", {
+      blog: blog,
+      title: "Blog Details",
+      allTags,
+      currentProfileId: profile._id.toString() || null,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const viewDetails = async (req, res, next) => {
   const id = req.params.id;
 
@@ -243,6 +275,16 @@ const dislike = async (req, res, next) => {
   }
 };
 
+const getBlogBySlug = async (req, res, next) => {
+  try {
+    const blog = await Blog.findOne({ slug: req.params.slug });
+    if (!blog) return res.status(404).send("Blog not found");
+    res.json(blog);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   viewAll,
   viewDetails,
@@ -251,4 +293,6 @@ module.exports = {
   like,
   dislike,
   update,
+  getBlogBySlug,
+  viewDetailsBySlug,
 };

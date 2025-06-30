@@ -1,20 +1,25 @@
-// Connect to DB
+require("dotenv").config();
 const mongoose = require("mongoose");
 const Blog = require("../models/blog");
+const { generateUniqueSlug } = require("../utils/slugUtils");
 
 const mongoUri = process.env.MONGO_URI;
 mongoose
   .connect(mongoUri, { serverSelectionTimeoutMS: 20000 })
   .then(async () => {
-    // Migrate the Field
-    const result = await Blog.updateMany(
-      { approval_status: { $exists: true } },
-      [
-        { $set: { approvalStatus: "$approval_status" } },
-        { $unset: "approval_status" },
-      ]
-    );
-    console.log("Migration Complete: ", result);
+    const blogs = await Blog.find();
+
+    for (const blog of blogs) {
+      if (blog.slug) continue;
+
+      if (blog.body.length < 100) continue;
+
+      const uniqueSlug = await generateUniqueSlug(blog.title);
+      blog.slug = uniqueSlug;
+
+      await blog.save();
+      console.log(`Slug added to blog ${blog._id}: ${uniqueSlug}`);
+    }
 
     // Close connection
     mongoose.connection.close();
