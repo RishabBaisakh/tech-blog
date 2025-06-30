@@ -126,7 +126,7 @@ const deleteBlog = async (req, res, next) => {
       });
     }
 
-    await blog.remove();
+    await blog.deleteOne();
     return res.json({ redirect: "/blogs" });
   } catch (err) {
     next(err);
